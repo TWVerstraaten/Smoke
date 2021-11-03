@@ -18,7 +18,9 @@ namespace app {
         void                clear_previous();
         void                clear_current();
         void                step(float dt);
-        [[nodiscard]] float sample_at(float x, float y) const;
+        [[nodiscard]] float sample_density_at(float x, float y) const;
+        [[nodiscard]] float sample_u_at(float x, float y) const;
+        [[nodiscard]] float sample_v_at(float x, float y) const;
 
       private:
         Matrix m_u{};

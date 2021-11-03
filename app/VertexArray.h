@@ -11,8 +11,8 @@
 
 namespace app {
 
-    static const size_t g_horizontal_points = 600;
-    static const size_t g_vertical_points   = 600;
+    static const size_t g_horizontal_points = 300;
+    static const size_t g_vertical_points   = 300;
 
     class Fluid;
 

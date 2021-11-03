@@ -31,13 +31,11 @@ int main() {
     app::MouseState right_click_state{};
 
     app::Fluid fluid{};
-    bool       running = true;
-    auto       time    = std::chrono::high_resolution_clock::now();
-
+    bool       running      = true;
+    auto       current_time = std::chrono::high_resolution_clock::now();
+    const auto start_time   = std::chrono::high_resolution_clock::now();
     while (running) {
-        std::chrono::high_resolution_clock::time_point t_1 = std::chrono::high_resolution_clock::now();
-
-        shader.update_uniform();
+        shader.update_uniform(std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count());
         sf::Event event{};
         fluid.clear_previous();
         while (window.pollEvent(event)) {
@@ -89,16 +87,18 @@ int main() {
         }
 
         auto now = std::chrono::high_resolution_clock::now();
-        fluid.step(static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(now - time).count()) / 1000.0f);
-        time = now;
+        fluid.step(static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(now - current_time).count()) / 1000.0f);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - current_time).count();
+        current_time  = now;
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         vertex_array.set_color(fluid);
         window.display();
 
-        std::chrono::high_resolution_clock::time_point t_2 = std::chrono::high_resolution_clock::now();
-        std::cout << "Framerate:\t " << 1000.0f / (std::chrono::duration_cast<std::chrono::milliseconds>(t_2 - t_1).count()) << "\n";
+        if (duration != 0) {
+            std::cout << "Framerate:\t " << 1000 / duration << "\n";
+        }
     }
     window.close();
 }

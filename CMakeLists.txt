@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(OpenGL REQUIRED)
 
-set(CMAKE_CXX_FLAGS "-O3 -Werror -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra")
 
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)

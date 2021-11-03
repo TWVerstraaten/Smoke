@@ -27,7 +27,7 @@ namespace app {
 
     static void diffuse(Matrix& current, Matrix& previous, float dt) {
         float ratio = dt * g_diffusion_coefficient * (g_cell_count - 1.0f) * (g_cell_count - 1.0f);
-        for (int k = 0; k != 15; ++k) {
+        for (int k = 0; k != 10; ++k) {
             for (int i = 1; i != g_cell_count; ++i) {
                 for (int j = 1; j != g_cell_count; ++j) {
                     current[i][j] = (previous[i][j] + ratio * sum_neighbors(current, i, j)) / (1 + (4 * ratio));
@@ -80,7 +80,7 @@ namespace app {
         }
         set_bounds_to_zero(v_previous);
         set_bounds_to_zero(u_previous);
-        for (int k = 0; k != 20; ++k) {
+        for (int k = 0; k != 10; ++k) {
             for (int i = 1; i != g_cell_count; ++i) {
                 for (int j = 1; j != g_cell_count; ++j) {
                     u_previous[i][j] = (v_previous[i][j] + sum_neighbors(u_previous, i, j)) / 4;
@@ -104,9 +104,19 @@ namespace app {
         return {i, j};
     }
 
-    float Fluid::sample_at(float x, float y) const {
+    float Fluid::sample_density_at(float x, float y) const {
         const auto [i, j] = screen_to_array_indices(x, y);
         return m_density[i][j];
+    }
+
+    float Fluid::sample_u_at(float x, float y) const {
+        const auto [i, j] = screen_to_array_indices(x, y);
+        return m_u[i][j];
+    }
+
+    float Fluid::sample_v_at(float x, float y) const {
+        const auto [i, j] = screen_to_array_indices(x, y);
+        return m_v[i][j];
     }
 
     void Fluid::add_density(sf::Vector2f position, float multiplier) {

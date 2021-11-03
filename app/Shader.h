@@ -5,7 +5,6 @@
 #ifndef H_APP_SHADER_H
 #define H_APP_SHADER_H
 
-
 #include <GL/glew.h>
 #include <SFML/Graphics/Shader.hpp>
 
@@ -18,16 +17,15 @@ namespace app {
 
         void init();
 
-        void update_uniform();
+        void update_uniform(size_t elapsed_milliseconds) const;
 
       private:
         GLuint m_shader_program{};
         GLuint m_vertex_shader{};
         GLuint m_fragment_shader{};
-        GLfloat m_uniform_value = 0.0;
-        GLint m_uniform_location = -1;
+        GLint  m_uniform_location = -1;
     };
 
-}// namespace app
+} // namespace app
 
-#endif//H_APP_SHADER_H
+#endif // H_APP_SHADER_H

@@ -22,7 +22,7 @@ namespace app {
 
     vec3 f2(float r, float g, float b){
         float c =  0.5 + 0.5 * sin(offset);
-        return c * vec3(r, g, b) + (1.0f - c) * vec3(1.0f - g, 1.0f - b, 1.0f - r);
+        return c * vec3(r, g * sin(2.12 * offset) + r * cos(2.12 * offset), b) + (1.0f - c) * vec3(1.0f - g, 1.0f - b, 1.0f - r);
     }
 
     void main()
@@ -64,13 +64,15 @@ namespace app {
         glUseProgram(m_shader_program);
 
         // Specify the layout of the vertex data
-        GLint posAttrib = glGetAttribLocation(m_shader_program, "position");
-        glEnableVertexAttribArray(posAttrib);
-        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+        GLint position_attrib = glGetAttribLocation(m_shader_program, "position");
+        glEnableVertexAttribArray(position_attrib);
+        glVertexAttribPointer(position_attrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
 
-        GLint colAttrib = glGetAttribLocation(m_shader_program, "color");
-        glEnableVertexAttribArray(colAttrib);
-        glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+        GLint color_attrib = glGetAttribLocation(m_shader_program, "color");
+        glEnableVertexAttribArray(color_attrib);
+        glVertexAttribPointer(color_attrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+
+        m_uniform_location = glGetUniformLocation(m_shader_program, "offset");
     }
 
     Shader::~Shader() {
@@ -79,8 +81,7 @@ namespace app {
         glDeleteShader(m_vertex_shader);
     }
 
-    void Shader::update_uniform() {
-        ++m_uniform_value;
-        glUniform1f(glGetUniformLocation(m_shader_program, "offset"), m_uniform_value / static_cast<float>(50));
+    void Shader::update_uniform(size_t elapsed_milliseconds) const {
+        glUniform1f(m_uniform_location, static_cast<float>(elapsed_milliseconds) / 2000.0f);
     }
 } // namespace app

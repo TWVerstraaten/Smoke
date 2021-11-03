@@ -67,18 +67,20 @@ namespace app {
         if (x < 0.01f) {
             x = 0.5f * (1.0f - x) + 0.2f;
         }
-        return std::sqrt(x);
-//        return (std::round(7.0f * std::sqrt(x))) / 7.0f;
+//        return math::clamp(std::sqrt(x), 0.0f, 1.0f);
+                return (std::round(7.0f * std::sqrt(x))) / 7.0f;
     }
 
     void VertexArray::set_color(const Fluid& fluid) {
         for (size_t j = 0; j != g_vertical_points; ++j) {
             for (size_t i = 0; i != g_horizontal_points; ++i) {
                 const size_t index    = 5 * (i + j * g_horizontal_points);
-                const auto   d        = project(fluid.sample_at(i / static_cast<float>(g_horizontal_points), j / static_cast<float>(g_vertical_points)) / 150.0f);
-                m_vertices[index + 2] = d * d;
-                m_vertices[index + 3] = d * (1.0f - d);
-                m_vertices[index + 4] = d * d;
+                const auto   r        = project(fluid.sample_density_at(i / static_cast<float>(g_horizontal_points), j / static_cast<float>(g_vertical_points)) / 150.0f);
+                const auto   g        = project(fluid.sample_u_at(i / static_cast<float>(g_horizontal_points), j / static_cast<float>(g_vertical_points)) / 1.0f);
+                const auto   b        = project(fluid.sample_v_at(i / static_cast<float>(g_horizontal_points), j / static_cast<float>(g_vertical_points)) / 1.0f);
+                m_vertices[index + 2] = r;
+                m_vertices[index + 3] = r * g;
+                m_vertices[index + 4] = r * b;
             }
         }
         bind();
