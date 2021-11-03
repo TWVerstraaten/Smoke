@@ -4,8 +4,6 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
-// static float time_step = 0.02f;
-
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
