@@ -1,65 +1,56 @@
 #include "app/Fluid.h"
+#include "app/MouseState.h"
+#include "app/Shader.h"
+#include "app/VertexArray.h"
 
-#include <GL/gl.h>
-#include <SDL2/SDL.h>
+#include <GL/glew.h>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <chrono>
 #include <iostream>
 
 int main() {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
-    }
+    sf::ContextSettings settings;
+    settings.depthBits    = 24;
+    settings.stencilBits  = 8;
+    settings.majorVersion = 3;
+    settings.minorVersion = 2;
 
-    const int width  = 1000;
-    const int height = 600;
+    sf::RenderWindow window(sf::VideoMode(800, 900, 32), "OpenGL", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize, settings);
 
-    SDL_Window*   window;
-    SDL_Renderer* renderer;
-    SDL_CreateWindowAndRenderer(width, height, 0, &window, &renderer);
+    glewExperimental = GL_TRUE;
+    glewInit();
 
-    SDL_Event event;
-    bool      running             = true;
-    bool      mouse_button_down[] = {false, false};
-    bool      mouse_move          = false;
-    int       old_mouse_x, old_mouse_y, current_mouse_x, current_mouse_y;
+    app::VertexArray vertex_array{};
+    vertex_array.bind();
+
+    app::Shader shader{};
+    shader.init();
+
+    app::MouseState left_click_state{};
+    app::MouseState right_click_state{};
 
     app::Fluid fluid{};
-    while (running) {
+    bool       running = true;
+    auto       time    = std::chrono::high_resolution_clock::now();
 
-        mouse_move = false;
-        while (SDL_PollEvent(&event)) {
+    while (running) {
+        std::chrono::high_resolution_clock::time_point t_1 = std::chrono::high_resolution_clock::now();
+
+        shader.update_uniform();
+        sf::Event event{};
+        fluid.clear_previous();
+        while (window.pollEvent(event)) {
             switch (event.type) {
-                case SDL_QUIT:
+                case sf::Event::Closed:
                     running = false;
                     break;
-                case SDL_MOUSEBUTTONDOWN:
-                    if (event.button.button == SDL_BUTTON_LEFT && !mouse_button_down[0]) {
-                        mouse_button_down[0] = true;
-                    } else if (event.button.button == SDL_BUTTON_RIGHT && !mouse_button_down[1]) {
-                        mouse_button_down[1] = true;
-                    }
-                    SDL_GetMouseState(&old_mouse_x, &old_mouse_y);
-                    current_mouse_x = old_mouse_x;
-                    current_mouse_y = old_mouse_y;
-                    break;
-                case SDL_MOUSEBUTTONUP:
-                    if (event.button.button == SDL_BUTTON_LEFT && mouse_button_down[0]) {
-                        mouse_button_down[0] = false;
-                    } else if (event.button.button == SDL_BUTTON_RIGHT && mouse_button_down[1]) {
-                        mouse_button_down[1] = false;
-                    }
-                    break;
-                case SDL_MOUSEMOTION:
-                    if (mouse_button_down[0] || mouse_button_down[1]) {
-                        SDL_GetMouseState(&current_mouse_x, &current_mouse_y);
-                        mouse_move = true;
-                    }
-                    break;
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_ESCAPE:
+                case sf::Event::KeyPressed:
+                    switch (event.key.code) {
+                        case sf::Keyboard::Escape:
                             running = false;
                             break;
-                        case SDLK_SPACE:
+                        case sf::Keyboard::Space:
                             fluid.clear_previous();
                             fluid.clear_current();
                             break;
@@ -67,45 +58,47 @@ int main() {
                             break;
                     }
                     break;
+                case sf::Event::MouseButtonPressed:
+                    if (event.mouseButton.button == sf::Mouse::Left) {
+                        left_click_state.press();
+                    } else if (event.mouseButton.button == sf::Mouse::Right) {
+                        right_click_state.press();
+                    }
+                    break;
+                case sf::Event::MouseButtonReleased:
+                    if (event.mouseButton.button == sf::Mouse::Left) {
+                        left_click_state.release();
+                    } else if (event.mouseButton.button == sf::Mouse::Right) {
+                        right_click_state.release();
+                    }
+                    break;
+                case sf::Event::MouseMoved:
+                    if (left_click_state.pressed()) {
+                        left_click_state.get_new_position(window);
+                        fluid.add_density(left_click_state.current());
+                        fluid.add_velocity(left_click_state.current(), left_click_state.direction());
+                    } else if (right_click_state.pressed()) {
+                        right_click_state.get_new_position(window);
+                        fluid.add_density(right_click_state.current(), -1.0f);
+                        fluid.add_velocity(right_click_state.current(), right_click_state.direction());
+                    }
+                    break;
                 default:
                     break;
             }
         }
-        fluid.clear_previous();
-        if (mouse_move) {
-            const float mouse_x_in_screen = static_cast<float>(current_mouse_x) / static_cast<float>(width);
-            const float mouse_y_in_screen = static_cast<float>(current_mouse_y) / static_cast<float>(height);
-            if (mouse_button_down[0]) {
-                fluid.add_density(mouse_x_in_screen, mouse_y_in_screen);
-            } else {
-                fluid.add_density(mouse_x_in_screen, mouse_y_in_screen, -1.0);
-            }
-            fluid.add_velocity(static_cast<float>(current_mouse_x - old_mouse_x) / static_cast<float>(width),
-                               static_cast<float>(current_mouse_y - old_mouse_y) / static_cast<float>(height),
-                               mouse_x_in_screen,
-                               mouse_y_in_screen);
-            old_mouse_x = current_mouse_x;
-            old_mouse_y = current_mouse_y;
-        }
-        fluid.step(0.03);
-        glClear(GL_COLOR_BUFFER_BIT);
 
-        int      b = 3;
-        SDL_Rect rect;
-        rect.w = b;
-        rect.h = b;
-        for (int w = 0; w < width; w += b) {
-            for (int h = 0; h < height; h += b) {
-                rect.x       = w;
-                rect.y       = h;
-                const auto d = std::min(fluid.sample_at(w / static_cast<float>(width), h / static_cast<float>(height)), 2500.0f) / 2500.0;
-                SDL_SetRenderDrawColor(renderer, 255 * d, 0, 0, 255);
-                SDL_RenderFillRect(renderer, &rect);
-            }
-        }
-        SDL_RenderPresent(renderer);
+        auto now = std::chrono::high_resolution_clock::now();
+        fluid.step(static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(now - time).count()) / 1000.0f);
+        time = now;
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        vertex_array.set_color(fluid);
+        window.display();
+
+        std::chrono::high_resolution_clock::time_point t_2 = std::chrono::high_resolution_clock::now();
+        std::cout << "Framerate:\t " << 1000.0f / (std::chrono::duration_cast<std::chrono::milliseconds>(t_2 - t_1).count()) << "\n";
     }
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    return 0;
+    window.close();
 }

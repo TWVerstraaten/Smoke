@@ -9,12 +9,12 @@
 
 namespace app {
 
-    static constexpr size_t g_point_count           = 100;
+    static constexpr size_t g_point_count           = 200;
     static constexpr size_t g_cell_count            = g_point_count - 1;
-    static constexpr float  g_particle_input        = 80000.0f;
+    static constexpr float  g_particle_input        = 13800.0f;
     static constexpr float  g_force_input           = 9590.0f;
-    static constexpr float  g_diffusion_coefficient = 0.00008f;
-    static constexpr float  g_viscosity_coefficient = 0.0001f;
+    static constexpr float  g_diffusion_coefficient = 0.0004f;
+    static constexpr float  g_viscosity_coefficient = 0.00002f;
 
 } // namespace app
 

@@ -1,5 +1,7 @@
 #include "Fluid.h"
 
+#include "Math.h"
+
 #include <cmath>
 
 namespace app {
@@ -16,7 +18,7 @@ namespace app {
     }
 
     static float clamp_to_grid(float value) {
-        return value < 0.5f ? 0.5f : value > (static_cast<float>(g_cell_count) - 0.5f) ? static_cast<float>(g_cell_count) - 0.5f : value;
+        return math::clamp(value, 0.5f, static_cast<float>(g_cell_count) - 0.5f);
     }
 
     static float sum_neighbors(Matrix& matrix, int i, int j) {
@@ -96,14 +98,9 @@ namespace app {
         set_bounds_to_zero(v_current);
     }
 
-    template <typename T>
-    static float clamp(T value, T min, T max) {
-        return value < min ? min : value > max ? max : value;
-    }
-
     static std::pair<int, int> screen_to_array_indices(float x, float y) {
-        const int i = static_cast<int>(clamp(x, 0.0f, 1.0f) * g_point_count);
-        const int j = static_cast<int>(clamp(y, 0.0f, 1.0f) * g_point_count);
+        const int i = static_cast<int>(math::clamp(x, 0.0f, 0.99f) * g_point_count);
+        const int j = static_cast<int>(math::clamp(y, 0.0f, 0.99f) * g_point_count);
         return {i, j};
     }
 
@@ -112,12 +109,15 @@ namespace app {
         return m_density[i][j];
     }
 
-    void Fluid::add_density(float x, float y, float multiplier) {
+    void Fluid::add_density(sf::Vector2f position, float multiplier) {
+        const float x = position.x;
+        const float y = 1.0f - position.y;
+
         if (x <= 0 || x >= 1 || y <= 0 || y >= 1) {
             return;
         }
-        const auto [i_min, j_min]   = screen_to_array_indices(x - 0.01f, y - 0.01f);
-        const auto [i_plus, j_plus] = screen_to_array_indices(x + 0.01f, y + 0.01f);
+        const auto [i_min, j_min]   = screen_to_array_indices(x - 0.015f, y - 0.015f);
+        const auto [i_plus, j_plus] = screen_to_array_indices(x + 0.015f, y + 0.015f);
 
         for (int i = i_min; i != i_plus + 1; ++i) {
             for (int j = j_min; j != j_plus + 1; ++j) {
@@ -126,13 +126,15 @@ namespace app {
         }
     }
 
-    void Fluid::add_velocity(float x_direction, float y_direction, float x, float y) {
+    void Fluid::add_velocity(sf::Vector2f position, sf::Vector2f direction) {
+        const float x = position.x;
+        const float y = 1.0f - position.y;
         if (x <= 0 || x >= 1 || y <= 0 || y >= 1) {
             return;
         }
         const auto [i, j]  = screen_to_array_indices(x, y);
-        m_u_previous[i][j] = g_force_input * x_direction;
-        m_v_previous[i][j] = g_force_input * y_direction;
+        m_u_previous[i][j] = g_force_input * direction.x;
+        m_v_previous[i][j] = g_force_input * direction.y;
     }
 
     void Fluid::clear_previous() {
