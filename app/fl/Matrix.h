@@ -2,14 +2,14 @@
 // Created by pc on 03-11-21.
 //
 
-#ifndef H__MATRIX_H
-#define H__MATRIX_H
+#ifndef H_APP_FL_MATRIX_H
+#define H_APP_FL_MATRIX_H
 
 #include "Settings.h"
 
 #include <array>
 
-namespace app {
+namespace app::fl {
 
     class Matrix {
 
@@ -32,4 +32,4 @@ namespace app {
 
 } // namespace app
 
-#endif // H__MATRIX_H
+#endif // H_APP_FL_MATRIX_H

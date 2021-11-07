@@ -1,18 +1,19 @@
-#ifndef H_APP_FLUID_H
-#define H_APP_FLUID_H
+#ifndef H_APP_FL_FLUID_H
+#define H_APP_FL_FLUID_H
 
 #include "Matrix.h"
 #include "Settings.h"
 
 #include <SFML/System/Vector2.hpp>
 
-namespace app {
+namespace app::fl {
 
     class Fluid {
 
       public:
-        void                add_density(sf::Vector2f position, float multiplier = 1.0f);
-        void                add_velocity(sf::Vector2f position, sf::Vector2f direction);
+        void                add_bar();
+        void                add_density(float x, float y, float multiplier = 1.0f);
+        void                add_velocity(float x, float y, float dx, float dy);
         void                density_step(float dt);
         void                velocity_step(float dt);
         void                clear_previous();

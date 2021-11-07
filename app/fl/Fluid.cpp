@@ -1,10 +1,11 @@
 #include "Fluid.h"
 
-#include "Math.h"
+#include "../Math.h"
 
+#include <cassert>
 #include <cmath>
 
-namespace app {
+namespace app::fl {
 
     // See Jos Stam's paper "Real-Time Fluid Dynamics for Games" for the algorithm below
 
@@ -119,15 +120,12 @@ namespace app {
         return m_v[i][j];
     }
 
-    void Fluid::add_density(sf::Vector2f position, float multiplier) {
-        const float x = position.x;
-        const float y = 1.0f - position.y;
-
+    void Fluid::add_density(float x, float y, float multiplier) {
         if (x <= 0 || x >= 1 || y <= 0 || y >= 1) {
             return;
         }
-        const auto [i_min, j_min]   = screen_to_array_indices(x - 0.015f, y - 0.015f);
-        const auto [i_plus, j_plus] = screen_to_array_indices(x + 0.015f, y + 0.015f);
+        const auto [i_min, j_min]   = screen_to_array_indices(x - 0.03f, y - 0.03f);
+        const auto [i_plus, j_plus] = screen_to_array_indices(x + 0.03f, y + 0.03f);
 
         for (int i = i_min; i != i_plus + 1; ++i) {
             for (int j = j_min; j != j_plus + 1; ++j) {
@@ -136,15 +134,13 @@ namespace app {
         }
     }
 
-    void Fluid::add_velocity(sf::Vector2f position, sf::Vector2f direction) {
-        const float x = position.x;
-        const float y = 1.0f - position.y;
+    void Fluid::add_velocity(float x, float y, float dx, float dy) {
         if (x <= 0 || x >= 1 || y <= 0 || y >= 1) {
             return;
         }
         const auto [i, j]  = screen_to_array_indices(x, y);
-        m_u_previous[i][j] = g_force_input * direction.x;
-        m_v_previous[i][j] = g_force_input * direction.y;
+        m_u_previous[i][j] = g_force_input * dx;
+        m_v_previous[i][j] = g_force_input * dy;
     }
 
     void Fluid::clear_previous() {
@@ -180,4 +176,38 @@ namespace app {
         velocity_step(dt);
         density_step(dt);
     }
-} // namespace app
+    void Fluid::add_bar() {
+        for (size_t i = 0; i != 20; ++i) {
+            float r             = static_cast<float>(rand()) / static_cast<float>(6.0f * RAND_MAX);
+            auto [i_min, j_min] = screen_to_array_indices(static_cast<float>(i) / 20.0f, 0.0f);
+            auto [i_max, j_max] = screen_to_array_indices(static_cast<float>(i + 1) / 2.0f, r);
+            assert(i_min <= i_max);
+            assert(j_min <= j_max);
+            const float du = g_force_input * (static_cast<float>(rand()) / (92230.0 * RAND_MAX)) * ((rand() % 10) > 4 ? -1.0 : 1.0f);
+            for (int w = i_min; w <= i_max; ++w) {
+                for (int h = j_min; h <= j_max; ++h) {
+                    m_density_previous[w][h] = 0.1 * g_particle_input;
+                    m_v_previous[w][h]       = 0.001 * g_force_input * r;
+                    m_u_previous[w][h]       = du;
+                }
+            }
+        }
+
+        //        for (size_t i = 0; i != 20; ++i) {
+        //            float r             = static_cast<float>(rand()) / static_cast<float>(6.0f * RAND_MAX);
+        //            auto [i_min, j_min] = screen_to_array_indices(static_cast<float>(i) / 20.0f, 1.0f - r);
+        //            auto [i_max, j_max] = screen_to_array_indices(static_cast<float>(i + 1) / 20.0f, 1.0f);
+        //            assert(i_min <= i_max);
+        //            assert(j_min <= j_max);
+        //            const float du = g_force_input * (static_cast<float>(rand()) / (9230.0 * RAND_MAX)) * ((rand() % 10) > 4 ? -1.0 : 1.0f);
+        //            for (int w = i_min; w <= i_max; ++w) {
+        //                for (int h = j_min; h <= j_max; ++h) {
+        //                    m_density_previous[w][h] = -1.0 * g_particle_input;
+        //                    m_v_previous[w][h]       = -0.001 * g_force_input * r;
+        //                    m_u_previous[w][h]       = du;
+        //                }
+        //            }
+        //        }
+    }
+
+} // namespace app::fl

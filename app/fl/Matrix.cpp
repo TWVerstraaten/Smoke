@@ -4,7 +4,7 @@
 
 #include "Matrix.h"
 
-namespace app {
+namespace app::fl {
 
     Matrix::Row<float> Matrix::operator[](size_t row) {
         return Row<float>{m_array.data() + g_point_count * row};
@@ -17,4 +17,4 @@ namespace app {
     void Matrix::set_zero() {
         m_array = {0};
     }
-} // namespace app
+} // namespace app::fl
