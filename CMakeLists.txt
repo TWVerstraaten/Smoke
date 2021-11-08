@@ -16,5 +16,5 @@ find_package(SFML COMPONENTS window graphics)
 
 link_libraries(GLEW OpenGL::GL sfml-window sfml-graphics Qt5::Core Qt5::Widgets)
 
-add_executable(smoke main.cpp app/fl/Fluid.cpp app/fl/Fluid.h app/fl/Matrix.cpp app/fl/Matrix.h app/fl/Settings.h app/Math.cpp app/Math.h app/MainWidget.cpp app/MainWidget.h)
+add_executable(smoke main.cpp app/fl/Fluid.cpp app/fl/Fluid.h app/fl/Matrix.cpp app/fl/Matrix.h app/fl/Settings.h app/Math.cpp app/Math.h app/disp/MainWidget.cpp app/disp/MainWidget.h app/disp/Shader.cpp app/disp/Shader.h app/disp/DrawingBuffers.cpp app/disp/DrawingBuffers.h app/disp/MouseState.cpp app/disp/MouseState.h app/disp/MainWindow.cpp app/disp/MainWindow.h)
 

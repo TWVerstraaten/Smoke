@@ -1,9 +1,8 @@
-#include "app/MainWidget.h"
-#include "app/Math.h"
+#include "app/disp/MainWidget.h"
+#include "app/disp/MainWindow.h"
 
 #include <QApplication>
 #include <QSurfaceFormat>
-#include <iostream>
 
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
@@ -13,7 +12,7 @@ int main(int argc, char** argv) {
     QSurfaceFormat::setDefaultFormat(format);
 
     app.setApplicationName("smoke");
-    app::disp::MainWidget widget;
+    app::disp::MainWindow widget;
     widget.show();
     return app.exec();
 }
