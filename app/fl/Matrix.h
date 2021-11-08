@@ -8,6 +8,7 @@
 #include "Settings.h"
 
 #include <array>
+#include <cassert>
 
 namespace app::fl {
 
@@ -17,6 +18,7 @@ namespace app::fl {
         template <class T>
         struct Row {
             T& operator[](size_t index) const {
+                assert(index < g_point_count);
                 return *(m_p + index);
             }
             T* m_p;

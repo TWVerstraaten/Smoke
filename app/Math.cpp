@@ -4,6 +4,8 @@
 
 #include "Math.h"
 
+#include <cmath>
+
 namespace app::math {
 
     std::pair<int, float> mod_one(const float x) {

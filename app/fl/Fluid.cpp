@@ -242,19 +242,29 @@ namespace app::fl {
     void Fluid::step(float dt) {
         auto start = std::chrono::high_resolution_clock::now();
 
-        velocity_step(dt);
-        density_step(dt);
+        {
+            velocity_step(dt);
+            auto stop     = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+            std::cout << "Velocity step\t" << duration.count() << ",\t";
+        }
+        {
+            density_step(dt);
+            auto stop     = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+            std::cout << "Density step\t" << duration.count() << "\n";
+        }
         decrease_density();
 
-        auto stop     = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        std::cout << duration.count() << std::endl;
+        //        auto stop     = std::chrono::high_resolution_clock::now();
+        //        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        //        std::cout << duration.count() << std::endl;
     }
 
     void Fluid::decrease_density() {
         for (int i = 0; i != g_cell_count; ++i) {
             for (int j = 0; j != g_cell_count; ++j) {
-                m_density[i][j] *= 0.94;
+                m_density[i][j] *= 0.99;
             }
         }
     }
@@ -269,8 +279,8 @@ namespace app::fl {
             const float du = g_force_input * (static_cast<float>(rand()) / (92230.0 * RAND_MAX)) * ((rand() % 10) > 4 ? -1.0 : 1.0f);
             for (int w = i_min; w <= i_max; ++w) {
                 for (int h = j_min; h <= j_max; ++h) {
-                    m_density_previous[w][h] = 0.1 * g_particle_input;
-                    m_v_previous[w][h]       = 0.001 * g_force_input * r;
+                    m_density_previous[w][h] = 0.01 * g_particle_input;
+                    m_v_previous[w][h]       = 0.0001 * g_force_input * r;
                     m_u_previous[w][h]       = du;
                 }
             }
