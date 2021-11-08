@@ -6,6 +6,7 @@
 
 #include "Math.h"
 
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <cmath>
 
@@ -34,7 +35,8 @@ namespace app::disp {
 //        if ( mod(round(100 * gl_Position.x + 100 * gl_Position.y), 5) == 1){
 //            Color = 0.21 * f2(color[0],color[0],color[0]);
 //        } else {
-            Color = f2(color[0],color[1],color[2]);
+//            Color = f2(color[0],color[1],color[2]);
+            Color = vec3(color.r, color.g, color.b);
 //        }
     }
 )glsl";
@@ -126,37 +128,37 @@ namespace app::disp {
         glDrawElements(GL_QUADS, m_array_buf.size() / 5, GL_UNSIGNED_INT, 0);
     }
 
-    float project(float x) {
+    static float project(float x) {
         x = math::clamp(x, -1.0f, 1.0f);
         if (x < 0.01f) {
             x = 0.5f * (1.0f - x) + 0.2f;
         }
-                return math::clamp(std::sqrt(x), 0.0f, 1.0f);
-//        return std::round(3.0f * std::sqrt(x)) / 3.0f;
+        //        return math::clamp(std::sqrt(x), 0.0f, 1.0f);
+        return std::round(3.0f * std::sqrt(x)) / 3.0f;
     }
 
     void MainWidget::timerEvent(QTimerEvent* e) {
+        Q_UNUSED(e);
         m_offset += 0.16;
         //        m_fluid.add_bar();
         m_fluid.step(0.005);
         for (size_t j = 0; j != m_vertical_points; ++j) {
             for (size_t i = 0; i != m_horizontal_points; ++i) {
-                const int index = 5 * (i + j * m_horizontal_points);
-                if ((i + j) & 1) {
-                    const auto r          = project(m_fluid.sample_density_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 450.0f);
-                    const auto g          = project(m_fluid.sample_u_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 12.0f);
-                    const auto b          = project(m_fluid.sample_v_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 12.0f);
-                    m_vertices[index + 2] = r;
-                    m_vertices[index + 3] = r * g;
-                    m_vertices[index + 4] = r * b;
-                } else {
-                    const auto r          = project(m_fluid.sample_density_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 150.0f);
-                    const auto g          = project(m_fluid.sample_u_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 1.0f);
-                    const auto b          = project(m_fluid.sample_v_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 1.0f);
-                    m_vertices[index + 2] = r * b;
-                    m_vertices[index + 3] = r;
-                    m_vertices[index + 4] = r * g;
-                }
+                const size_t index = 5 * (i + j * m_horizontal_points);
+                //                if ((i + j) & 1) {
+                const auto r          = project(m_fluid.sample_density_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 450.0f);
+                const auto g          = project(m_fluid.sample_u_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 12.0f);
+                const auto b          = project(m_fluid.sample_v_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 12.0f);
+                m_vertices[index + 2] = r;
+                m_vertices[index + 3] = r * g;
+                m_vertices[index + 4] = r * b;
+                //                } else {
+                //                    const auto r          = project(m_fluid.sample_density_at(i / static_cast<float>(m_horizontal_points), j /
+                //                    static_cast<float>(m_vertical_points)) / 150.0f); const auto g          = project(m_fluid.sample_u_at(i /
+                //                    static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 1.0f); const auto b          =
+                //                    project(m_fluid.sample_v_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 1.0f); m_vertices[index
+                //                    + 2] = r * b; m_vertices[index + 3] = r; m_vertices[index + 4] = r * g;
+                //                }
             }
         }
 
@@ -209,6 +211,20 @@ namespace app::disp {
                 break;
             case Qt::RightButton:
                 m_right_pressed = false;
+                break;
+            default:
+                break;
+        }
+    }
+
+    void MainWidget::keyPressEvent(QKeyEvent* e) {
+        switch (e->key()) {
+            case Qt::Key::Key_Space:
+                m_fluid.clear_previous();
+                m_fluid.clear_current();
+                break;
+            case Qt::Key::Key_Escape:
+                close();
                 break;
             default:
                 break;

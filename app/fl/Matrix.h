@@ -24,12 +24,13 @@ namespace app::fl {
         Row<float>       operator[](size_t row);
         Row<const float> operator[](size_t row) const;
 
-        void set_zero();
+        void                set_zero();
+        [[nodiscard]] float sample_at(float x, float y) const;
 
       private:
         std::array<float, g_point_count * g_point_count> m_array{};
     };
 
-} // namespace app
+} // namespace app::fl
 
 #endif // H_APP_FL_MATRIX_H

@@ -7,7 +7,7 @@ find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-O3 -Werror -Wall -Wextra -pthread")
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(GLEW REQUIRED)

@@ -26,6 +26,7 @@ namespace app::disp {
         void mousePressEvent(QMouseEvent* e) override;
         void mouseReleaseEvent(QMouseEvent* e) override;
         void mouseMoveEvent(QMouseEvent* e) override;
+        void keyPressEvent(QKeyEvent* e) override;
 
         void timerEvent(QTimerEvent* e) override;
         void initializeGL() override;
@@ -37,11 +38,11 @@ namespace app::disp {
 
         int                  m_offset_uniform    = -1;
         float                m_offset            = 0.0f;
-        size_t               m_vertical_points   = 300;
-        size_t               m_horizontal_points = 300;
+        size_t               m_vertical_points   = 600;
+        size_t               m_horizontal_points = 600;
         fl::Fluid            m_fluid;
-        QVector<float>       m_vertices;
-        QVector<GLuint>      m_indices;
+        std::vector<float>   m_vertices;
+        std::vector<GLuint>  m_indices;
         QBasicTimer          m_timer;
         QOpenGLShaderProgram m_program;
         QOpenGLBuffer        m_array_buf;

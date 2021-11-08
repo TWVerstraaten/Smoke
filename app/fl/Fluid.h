@@ -14,8 +14,6 @@ namespace app::fl {
         void                add_bar();
         void                add_density(float x, float y, float multiplier = 1.0f);
         void                add_velocity(float x, float y, float dx, float dy);
-        void                density_step(float dt);
-        void                velocity_step(float dt);
         void                clear_previous();
         void                clear_current();
         void                step(float dt);
@@ -24,6 +22,10 @@ namespace app::fl {
         [[nodiscard]] float sample_v_at(float x, float y) const;
 
       private:
+        void density_step(float dt);
+        void velocity_step(float dt);
+        void decrease_density();
+
         Matrix m_u{};
         Matrix m_u_previous{};
         Matrix m_v{};
@@ -32,6 +34,6 @@ namespace app::fl {
         Matrix m_density_previous{};
     };
 
-} // namespace app
+} // namespace app::fl
 
 #endif

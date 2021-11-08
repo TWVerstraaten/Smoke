@@ -1,7 +1,9 @@
 #include "app/MainWidget.h"
+#include "app/Math.h"
 
 #include <QApplication>
 #include <QSurfaceFormat>
+#include <iostream>
 
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
