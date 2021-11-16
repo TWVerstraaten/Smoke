@@ -188,7 +188,6 @@ namespace app::fl {
     }
 
     static void project_step_3(Matrix& u_current, Matrix& v_current, const Matrix& u_previous) {
-
         if (g_multi_thread) {
             std::thread partial_1(project_thread_3, std::ref(u_current), std::ref(v_current), std::ref(u_previous), 1, g_half_points, 1, g_half_points);
             std::thread partial_2(project_thread_3, std::ref(u_current), std::ref(v_current), std::ref(u_previous), g_half_points, g_cell_count, 1, g_half_points);
@@ -236,7 +235,6 @@ namespace app::fl {
         }
         const auto [i_min, j_min]   = screen_to_array_indices(x - 0.03f, y - 0.03f);
         const auto [i_plus, j_plus] = screen_to_array_indices(x + 0.03f, y + 0.03f);
-
         for (int i = i_min; i != i_plus + 1; ++i) {
             for (int j = j_min; j != j_plus + 1; ++j) {
                 m_density_previous[i][j] = multiplier * g_particle_input;

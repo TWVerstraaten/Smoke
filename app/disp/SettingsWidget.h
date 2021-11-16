@@ -11,7 +11,7 @@
 #include <QWidget>
 #include <climits>
 
-class QFormLayout;
+class QVBoxLayout;
 
 namespace app::disp {
 
@@ -22,6 +22,7 @@ namespace app::disp {
       public:
         SettingsWidget();
 
+        void add_section(const QString& name);
         void add(const QString& name, size_t& value, int min = std::numeric_limits<int>::min(), int max = std::numeric_limits<int>::max());
         void add(const QString& name, float& value, float min = std::numeric_limits<float>::lowest(), float max = std::numeric_limits<float>::max());
         void add(const QString& name, bool& value);
@@ -33,11 +34,12 @@ namespace app::disp {
                 combo_box->addItem(it.key());
             }
             connect(combo_box, QOverload<const QString&>::of(&QComboBox::activated), [&, names](const QString& selected) { the_enum = names[selected]; });
-            m_form_layout->addRow(name, combo_box);
+            m_current_box_layout->addRow(name, combo_box);
         }
 
       private:
-        QFormLayout* m_form_layout;
+        QVBoxLayout* m_layout;
+        QFormLayout* m_current_box_layout = nullptr;
     };
 
 } // namespace app::disp

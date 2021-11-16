@@ -22,17 +22,22 @@ namespace app::disp {
         //        m_settings_widget->add("Diff", app::fl::g_diffusion_coefficient);
         //        m_settings_widget->add("Zoom Depth", g_zoom_depth);
         //        m_settings_widget->add("Zoom Decay", g_zoom_decay);
+        m_settings_widget->add_section("Performance");
         m_settings_widget->add("Multi thread", fl::g_multi_thread);
+
+        m_settings_widget->add_section("Display");
         m_settings_widget->add("Clamp colors", g_clamp_colors);
         m_settings_widget->add("Clamp counts", g_clamp_count);
+        m_settings_widget->add("Invert colors", g_invert_colors);
+        m_settings_widget->add("Color mode", g_color_mode, {{"gray", COLOR_MODE::GRAY}, {"rgb", COLOR_MODE::RGB}, {"space", COLOR_MODE::SPACE}});
+
+        m_settings_widget->add_section("Shots");
         m_settings_widget->add("Circle", [this]() { m_main_widget->set_circle(); });
         m_settings_widget->add("Zoom", [this]() { m_main_widget->zoom(); });
         m_settings_widget->add("Boom", [this]() {
             m_main_widget->zoom();
             m_main_widget->set_circle();
         });
-        m_settings_widget->add("Invert colors", g_invert_colors);
-        m_settings_widget->add("Color mode", g_color_mode, {{"gray", COLOR_MODE::GRAY}, {"rgb", COLOR_MODE::RGB}, {"space", COLOR_MODE::SPACE}});
 
         m_settings_widget->show();
         resize(1000, 1000);
