@@ -25,12 +25,15 @@ namespace app::disp {
       public:
         explicit MainWidget(QWidget* parent = nullptr);
 
+        void clear();
+        void set_circle();
+        void zoom();
+
       protected:
         void mousePressEvent(QMouseEvent* e) override;
         void mouseReleaseEvent(QMouseEvent* e) override;
         void mouseMoveEvent(QMouseEvent* e) override;
-        void keyPressEvent(QKeyEvent* e) override;
-
+        void resizeEvent(QResizeEvent* e) override;
         void timerEvent(QTimerEvent* e) override;
         void initializeGL() override;
         void paintGL() override;
@@ -41,6 +44,7 @@ namespace app::disp {
         fl::Fluid      m_fluid;
         QBasicTimer    m_timer;
         MouseState     m_mouse_state;
+        bool           m_open_gl_initialized = false;
     };
 
 } // namespace app::disp

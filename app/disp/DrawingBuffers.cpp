@@ -6,6 +6,7 @@
 
 #include "../Math.h"
 #include "../fl/Fluid.h"
+#include "ShaderSettings.h"
 
 #include <cmath>
 #include <iostream>
@@ -61,8 +62,11 @@ namespace app::disp {
         if (x < 0.0f) {
             x *= -1;
         }
-        return math::clamp(std::sqrt(std::sqrt(x)), 0.0f, 1.0f);
-        //        return std::round(3.0f * std::sqrt(std::sqrt(x))) / 3.0f;
+        if (g_clamp_colors) {
+            return std::round(static_cast<float>(g_clamp_count) * std::sqrt(std::sqrt(x))) / static_cast<float>(g_clamp_count);
+        } else {
+            return math::clamp(std::sqrt(std::sqrt(x)), 0.0f, 1.0f);
+        }
     }
 
     void DrawingBuffers::fill_and_bind(const app::fl::Fluid& m_fluid) {
@@ -74,8 +78,8 @@ namespace app::disp {
                 const float g         = project(m_fluid.sample_u_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 12.0f);
                 const float b         = project(m_fluid.sample_v_at(i / static_cast<float>(m_horizontal_points), j / static_cast<float>(m_vertical_points)) / 12.0f);
                 m_vertices[index + 2] = 1.0f - r;
-                m_vertices[index + 3] = 1.0f - r * g;
-                m_vertices[index + 4] = 1.0f - r * b;
+                m_vertices[index + 3] = 1.0f - std::sqrt(r) * g;
+                m_vertices[index + 4] = 1.0f - std::sqrt(r) * b;
                 //                } else {
                 //                    const auto r          = project(m_fluid.sample_density_at(i / static_cast<float>(m_horizontal_points), j /
                 //                    static_cast<float>(m_vertical_points)) / 150.0f); const auto g          = project(m_fluid.sample_u_at(i /

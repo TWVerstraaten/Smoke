@@ -21,6 +21,8 @@ namespace app::fl {
         [[nodiscard]] float sample_u_at(float x, float y) const;
         [[nodiscard]] float sample_v_at(float x, float y) const;
 
+        void set_circle();
+
       private:
         void density_step(float dt);
         void velocity_step(float dt);

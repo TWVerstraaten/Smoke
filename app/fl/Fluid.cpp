@@ -1,6 +1,7 @@
 #include "Fluid.h"
 
 #include "../Math.h"
+#include "../tools/ScopedTimer.h"
 
 #include <cassert>
 #include <chrono>
@@ -40,16 +41,20 @@ namespace app::fl {
     }
 
     static void diffuse(Matrix& current, const Matrix& previous, float dt) {
-        float       ratio       = dt * g_diffusion_coefficient * (g_cell_count - 1.0f) * (g_cell_count - 1.0f);
-        const auto  half_points = g_cell_count / 2;
-        std::thread partial_1(diffuse_thread, std::ref(current), std::ref(previous), ratio, 1, half_points, 1, half_points);
-        std::thread partial_2(diffuse_thread, std::ref(current), std::ref(previous), ratio, half_points, g_cell_count - 1, 1, half_points);
-        std::thread partial_3(diffuse_thread, std::ref(current), std::ref(previous), ratio, half_points, g_cell_count - 1, half_points, g_cell_count - 1);
-        std::thread partial_4(diffuse_thread, std::ref(current), std::ref(previous), ratio, 1, half_points, half_points, g_cell_count - 1);
-        partial_1.join();
-        partial_2.join();
-        partial_3.join();
-        partial_4.join();
+        float ratio = dt * g_diffusion_coefficient * (g_cell_count - 1.0f) * (g_cell_count - 1.0f);
+        if (g_multi_thread) {
+            const auto  half_points = g_cell_count / 2;
+            std::thread partial_1(diffuse_thread, std::ref(current), std::ref(previous), ratio, 1, half_points, 1, half_points);
+            std::thread partial_2(diffuse_thread, std::ref(current), std::ref(previous), ratio, half_points, g_cell_count - 1, 1, half_points);
+            std::thread partial_3(diffuse_thread, std::ref(current), std::ref(previous), ratio, half_points, g_cell_count - 1, half_points, g_cell_count - 1);
+            std::thread partial_4(diffuse_thread, std::ref(current), std::ref(previous), ratio, 1, half_points, half_points, g_cell_count - 1);
+            partial_1.join();
+            partial_2.join();
+            partial_3.join();
+            partial_4.join();
+        } else {
+            diffuse_thread(current, previous, ratio, 1, g_cell_count - 1, 1, g_cell_count - 1);
+        }
         set_bounds_to_zero(current);
     }
 
@@ -70,15 +75,19 @@ namespace app::fl {
 
     static void advect(Matrix& current, const Matrix& previous, const Matrix& u, const Matrix& v, float dt) {
         const float ratio = dt * static_cast<float>(g_cell_count - 1);
-        std::thread partial_1(advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, 1, g_half_points, 1, g_half_points);
-        std::thread partial_2(advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, g_half_points, g_cell_count - 1, 1, g_half_points);
-        std::thread partial_3(
-            advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, g_half_points, g_cell_count - 1, g_half_points, g_cell_count - 1);
-        std::thread partial_4(advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, 1, g_half_points, g_half_points, g_cell_count - 1);
-        partial_1.join();
-        partial_2.join();
-        partial_3.join();
-        partial_4.join();
+        if (g_multi_thread) {
+            std::thread partial_1(advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, 1, g_half_points, 1, g_half_points);
+            std::thread partial_2(advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, g_half_points, g_cell_count - 1, 1, g_half_points);
+            std::thread partial_3(
+                advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, g_half_points, g_cell_count - 1, g_half_points, g_cell_count - 1);
+            std::thread partial_4(advect_thread, std::ref(current), std::ref(previous), std::ref(u), std::ref(v), ratio, 1, g_half_points, g_half_points, g_cell_count - 1);
+            partial_1.join();
+            partial_2.join();
+            partial_3.join();
+            partial_4.join();
+        } else {
+            advect_thread(current, previous, u, v, ratio, 1, g_cell_count - 1, 1, g_cell_count - 1);
+        }
         set_bounds_to_zero(current);
     }
 
@@ -91,14 +100,18 @@ namespace app::fl {
     }
 
     static void add_scaled(Matrix& matrix, const Matrix& addend, float weight) {
-        std::thread partial_1(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, 0, g_half_points, 0, g_half_points);
-        std::thread partial_2(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, g_half_points, g_cell_count - 1, 0, g_half_points);
-        std::thread partial_3(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, g_half_points, g_cell_count - 1, g_half_points, g_cell_count - 1);
-        std::thread partial_4(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, 0, g_half_points, g_half_points, g_cell_count - 1);
-        partial_1.join();
-        partial_2.join();
-        partial_3.join();
-        partial_4.join();
+        if (g_multi_thread) {
+            std::thread partial_1(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, 0, g_half_points, 0, g_half_points);
+            std::thread partial_2(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, g_half_points, g_cell_count - 1, 0, g_half_points);
+            std::thread partial_3(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, g_half_points, g_cell_count - 1, g_half_points, g_cell_count - 1);
+            std::thread partial_4(add_scaled_thread, std::ref(matrix), std::ref(addend), weight, 0, g_half_points, g_half_points, g_cell_count - 1);
+            partial_1.join();
+            partial_2.join();
+            partial_3.join();
+            partial_4.join();
+        } else {
+            add_scaled_thread(matrix, addend, weight, 0, g_cell_count - 1, 0, g_cell_count - 1);
+        }
     }
 
     static float horizontal_difference(const Matrix& matrix, int i, int j) {
@@ -117,6 +130,21 @@ namespace app::fl {
         }
     }
 
+    static void project_step_1(Matrix& v_previous, const Matrix& u_current, const Matrix& v_current) {
+        if (g_multi_thread) {
+            std::thread partial_1(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), 1, g_half_points, 1, g_half_points);
+            std::thread partial_2(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), g_half_points, g_cell_count, 1, g_half_points);
+            std::thread partial_3(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), g_half_points, g_cell_count, g_half_points, g_cell_count);
+            std::thread partial_4(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), 1, g_half_points, g_half_points, g_cell_count);
+            partial_1.join();
+            partial_2.join();
+            partial_3.join();
+            partial_4.join();
+        } else {
+            project_thread_1(v_previous, u_current, v_current, 1, g_cell_count, 1, g_cell_count);
+        }
+    }
+
     static void project_thread_2(Matrix& u_previous, const Matrix& v_previous, int start_i, int end_i, int start_j, int end_j) {
         for (int i = start_i; i != end_i; ++i) {
             for (int j = start_j; j != end_j; ++j) {
@@ -125,33 +153,53 @@ namespace app::fl {
         }
     }
 
-    static void project_step_1(Matrix& v_previous, const Matrix& u_current, const Matrix& v_current) {
-        std::thread partial_1(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), 1, g_half_points, 1, g_half_points);
-        std::thread partial_2(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), g_half_points, g_cell_count, 1, g_half_points);
-        std::thread partial_3(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), g_half_points, g_cell_count, g_half_points, g_cell_count);
-        std::thread partial_4(project_thread_1, std::ref(v_previous), std::ref(u_current), std::ref(v_current), 1, g_half_points, g_half_points, g_cell_count);
-        partial_1.join();
-        partial_2.join();
-        partial_3.join();
-        partial_4.join();
+    static void project_step_2(Matrix& u_previous, const Matrix& v_previous) {
+        if (g_multi_thread) {
+            for (int k = 0; k != 10; ++k) {
+                std::thread partial_1(project_thread_2, std::ref(u_previous), std::ref(v_previous), 1, g_half_points, 1, g_half_points);
+                std::thread partial_2(project_thread_2, std::ref(u_previous), std::ref(v_previous), g_half_points + 1, g_cell_count, 1, g_half_points);
+                std::thread partial_3(project_thread_2, std::ref(u_previous), std::ref(v_previous), g_half_points + 1, g_cell_count, g_half_points + 1, g_cell_count);
+                std::thread partial_4(project_thread_2, std::ref(u_previous), std::ref(v_previous), 1, g_half_points, g_half_points + 1, g_cell_count);
+                partial_1.join();
+                partial_2.join();
+                partial_3.join();
+                partial_4.join();
+                for (int i = 1; i != g_cell_count; ++i) {
+                    u_previous[i][g_half_points] = (v_previous[i][g_half_points] + sum_neighbors(u_previous, i, g_half_points)) / 4.0f;
+                    if (i != g_half_points) {
+                        u_previous[g_half_points][i] = (v_previous[g_half_points][i] + sum_neighbors(u_previous, g_half_points, i)) / 4.0f;
+                    }
+                }
+            }
+        } else {
+            for (int k = 0; k != 10; ++k) {
+                project_thread_2(u_previous, v_previous, 1, g_cell_count, 1, g_cell_count);
+            }
+        }
     }
 
-    static void project_step_2(Matrix& u_previous, const Matrix& v_previous) {
-        for (int k = 0; k != 10; ++k) {
-            std::thread partial_1(project_thread_2, std::ref(u_previous), std::ref(v_previous), 1, g_half_points, 1, g_half_points);
-            std::thread partial_2(project_thread_2, std::ref(u_previous), std::ref(v_previous), g_half_points + 1, g_cell_count, 1, g_half_points);
-            std::thread partial_3(project_thread_2, std::ref(u_previous), std::ref(v_previous), g_half_points + 1, g_cell_count, g_half_points + 1, g_cell_count);
-            std::thread partial_4(project_thread_2, std::ref(u_previous), std::ref(v_previous), 1, g_half_points, g_half_points + 1, g_cell_count);
+    static void project_thread_3(Matrix& u_current, Matrix& v_current, const Matrix& u_previous, int start_i, int end_i, int start_j, int end_j) {
+        for (int i = start_i; i != end_i; ++i) {
+            for (int j = start_j; j != end_j; ++j) {
+                u_current[i][j] -= 0.5f * vertical_difference(u_previous, i, j) / g_cell_length;
+                v_current[i][j] -= 0.5f * horizontal_difference(u_previous, i, j) / g_cell_length;
+            }
+        }
+    }
+
+    static void project_step_3(Matrix& u_current, Matrix& v_current, const Matrix& u_previous) {
+
+        if (g_multi_thread) {
+            std::thread partial_1(project_thread_3, std::ref(u_current), std::ref(v_current), std::ref(u_previous), 1, g_half_points, 1, g_half_points);
+            std::thread partial_2(project_thread_3, std::ref(u_current), std::ref(v_current), std::ref(u_previous), g_half_points, g_cell_count, 1, g_half_points);
+            std::thread partial_3(project_thread_3, std::ref(u_current), std::ref(v_current), std::ref(u_previous), g_half_points, g_cell_count, g_half_points, g_cell_count);
+            std::thread partial_4(project_thread_3, std::ref(u_current), std::ref(v_current), std::ref(u_previous), 1, g_half_points, g_half_points, g_cell_count);
             partial_1.join();
             partial_2.join();
             partial_3.join();
             partial_4.join();
-            for (int i = 1; i != g_cell_count; ++i) {
-                u_previous[i][g_half_points] = (v_previous[i][g_half_points] + sum_neighbors(u_previous, i, g_half_points)) / 4;
-                if (i != g_half_points) {
-                    u_previous[g_half_points][i] = (v_previous[g_half_points][i] + sum_neighbors(u_previous, g_half_points, i)) / 4;
-                }
-            }
+        } else {
+            project_thread_3(u_current, v_current, u_previous, 1, g_cell_count, 1, g_cell_count);
         }
     }
 
@@ -159,12 +207,7 @@ namespace app::fl {
         u_previous.set_zero();
         project_step_1(v_previous, u_current, v_current);
         project_step_2(u_previous, v_previous);
-        for (int i = 1; i != g_cell_count; ++i) {
-            for (int j = 1; j != g_cell_count; ++j) {
-                u_current[i][j] -= 0.5f * vertical_difference(u_previous, i, j) / g_cell_length;
-                v_current[i][j] -= 0.5f * horizontal_difference(u_previous, i, j) / g_cell_length;
-            }
-        }
+        project_step_3(u_current, v_current, u_previous);
         set_bounds_to_zero(u_current);
         set_bounds_to_zero(v_current);
     }
@@ -240,25 +283,15 @@ namespace app::fl {
     }
 
     void Fluid::step(float dt) {
-        auto start = std::chrono::high_resolution_clock::now();
-
         {
+            app::tools::ScopedTimer t("Velocity step");
             velocity_step(dt);
-            auto stop     = std::chrono::high_resolution_clock::now();
-            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-            std::cout << "Velocity step\t" << duration.count() << ",\t";
         }
         {
+            app::tools::ScopedTimer t("Density step", "\n");
             density_step(dt);
-            auto stop     = std::chrono::high_resolution_clock::now();
-            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-            std::cout << "Density step\t" << duration.count() << "\n";
         }
         decrease_density();
-
-        //        auto stop     = std::chrono::high_resolution_clock::now();
-        //        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        //        std::cout << duration.count() << std::endl;
     }
 
     void Fluid::decrease_density() {
@@ -301,6 +334,23 @@ namespace app::fl {
         //                }
         //            }
         //        }
+    }
+
+    static size_t square(size_t a) {
+        return a * a;
+    }
+
+    void Fluid::set_circle() {
+        for (int i = 0; i != g_cell_count; ++i) {
+            for (int j = 0; j != g_cell_count; ++j) {
+                if (std::sqrt(square(i - g_cell_count / 2) + square(j - g_cell_count / 2)) < g_cell_count / 4 &&
+                    std::sqrt(square(i - g_cell_count / 2) + square(j - g_cell_count / 2)) > -4 + g_cell_count / 4) {
+                    m_density[i][j] = 120;
+                    m_u[i][j] *= 3;
+                    m_v[i][j] *= 3;
+                }
+            }
+        }
     }
 
 } // namespace app::fl

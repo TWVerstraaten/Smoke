@@ -19,6 +19,8 @@ namespace app::disp {
         }
         m_drawing_buffers.init();
         m_timer.start(6, this);
+        m_shader.set_uniform_screen_size(width(), height());
+        m_open_gl_initialized = true;
     }
 
     void MainWidget::paintGL() {
@@ -67,18 +69,25 @@ namespace app::disp {
         m_mouse_state.release(e->button());
     }
 
-    void MainWidget::keyPressEvent(QKeyEvent* e) {
-        switch (e->key()) {
-            case Qt::Key::Key_Space:
-                m_fluid.clear_previous();
-                m_fluid.clear_current();
-                break;
-            case Qt::Key::Key_Escape:
-                close();
-                break;
-            default:
-                break;
+    void MainWidget::clear() {
+        m_fluid.clear_current();
+        m_fluid.clear_previous();
+    }
+
+    void MainWidget::set_circle() {
+        m_fluid.set_circle();
+        m_shader.set_circle();
+    }
+
+    void MainWidget::zoom() {
+        m_shader.zoom();
+    }
+
+    void MainWidget::resizeEvent(QResizeEvent* e) {
+        if (m_open_gl_initialized) {
+            m_shader.set_uniform_screen_size(width(), height());
         }
+        QOpenGLWidget::resizeEvent(e);
     }
 
 } // namespace app::disp

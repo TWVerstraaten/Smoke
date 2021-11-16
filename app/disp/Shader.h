@@ -12,13 +12,18 @@ namespace app::disp {
     class Shader {
 
       public:
+
         bool init();
         void update(float dt);
         void set_locations();
+        void zoom();
+        void set_circle();
+        void set_uniform_screen_size(int width, int height);
 
       private:
-        float                m_offset         = 0.0f;
-        int                  m_offset_uniform = -1;
+        float                m_offset       = 0.0f;
+        float                m_zoom         = 0.0f;
+        float                m_circle_timer = 0.0f;
         QOpenGLShaderProgram m_program;
     };
 

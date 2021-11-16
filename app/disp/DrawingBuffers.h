@@ -30,8 +30,8 @@ namespace app::disp {
         QOpenGLBuffer       m_index_buffer;
         std::vector<float>  m_vertices;
         std::vector<GLuint> m_indices;
-        const size_t        m_vertical_points   = 300;
-        const size_t        m_horizontal_points = 300;
+        const size_t        m_vertical_points   = 500;
+        const size_t        m_horizontal_points = 500;
     };
 
 } // namespace app::disp

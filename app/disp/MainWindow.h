@@ -9,17 +9,23 @@
 
 namespace app::disp {
 
+    class SettingsWidget;
     class MainWidget;
 
     class MainWindow : public QMainWindow {
         Q_OBJECT
 
       public:
-
         MainWindow();
 
+        void keyPressEvent(QKeyEvent* e) override;
+
+      protected:
+        void closeEvent(QCloseEvent* event) override;
+
       private:
-        MainWidget* m_main_widget;
+        MainWidget*     m_main_widget;
+        SettingsWidget* m_settings_widget;
     };
 
 } // namespace app::disp
