@@ -16,6 +16,11 @@ namespace app::math {
 
     std::pair<int, float> mod_one(float x);
 
+    template <typename T>
+    static T square(T a) {
+        return a * a;
+    }
+
 } // namespace app::math
 
 #endif // H_APP_MATH_H

@@ -1,10 +1,8 @@
 #ifndef H_APP_FL_FLUID_H
 #define H_APP_FL_FLUID_H
 
+#include "FluidSettings.h"
 #include "Matrix.h"
-#include "Settings.h"
-
-#include <SFML/System/Vector2.hpp>
 
 namespace app::fl {
 
@@ -16,7 +14,7 @@ namespace app::fl {
         void                add_velocity(float x, float y, float dx, float dy);
         void                clear_previous();
         void                clear_current();
-        void                step(float dt);
+        void                step();
         [[nodiscard]] float sample_density_at(float x, float y) const;
         [[nodiscard]] float sample_u_at(float x, float y) const;
         [[nodiscard]] float sample_v_at(float x, float y) const;
@@ -24,8 +22,8 @@ namespace app::fl {
         void set_circle();
 
       private:
-        void density_step(float dt);
-        void velocity_step(float dt);
+        void density_step();
+        void velocity_step();
         void decrease_density();
 
         Matrix m_u{};

@@ -7,7 +7,6 @@
 #include <QCheckBox>
 #include <QFormLayout>
 #include <QGroupBox>
-#include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
 #include <iostream>
@@ -53,7 +52,7 @@ namespace app::disp {
     }
 
     void SettingsWidget::add(const QString& name, const std::function<void()>& call_back) {
-        auto* push_button = new QPushButton(this);
+        auto* push_button = new QPushButton("GO", this);
         connect(push_button, &QPushButton::pressed, call_back);
         m_current_box_layout->addRow(name, push_button);
     }

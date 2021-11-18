@@ -5,7 +5,7 @@
 #ifndef H_APP_FL_MATRIX_H
 #define H_APP_FL_MATRIX_H
 
-#include "Settings.h"
+#include "FluidSettings.h"
 
 #include <array>
 #include <cassert>
@@ -27,6 +27,9 @@ namespace app::fl {
         Row<const float> operator[](size_t row) const;
 
         void                set_zero();
+        void add_scaled(const Matrix& rhs, float weight);
+        Matrix& operator +=(const Matrix& rhs);
+
         [[nodiscard]] float sample_at(float x, float y) const;
 
       private:

@@ -10,7 +10,7 @@
 namespace app::disp {
 
     class SettingsWidget;
-    class MainWidget;
+    class SmokeWidget;
 
     class MainWindow : public QMainWindow {
         Q_OBJECT
@@ -24,7 +24,7 @@ namespace app::disp {
         void closeEvent(QCloseEvent* event) override;
 
       private:
-        MainWidget*     m_main_widget;
+        SmokeWidget*    m_smoke_widget;
         SettingsWidget* m_settings_widget;
     };
 

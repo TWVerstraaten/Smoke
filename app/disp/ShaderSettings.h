@@ -13,10 +13,10 @@ namespace app::disp {
 
     extern float      g_zoom_depth;
     extern float      g_zoom_decay;
-    extern COLOR_MODE g_color_mode;
     extern bool       g_invert_colors;
     extern bool       g_clamp_colors;
     extern size_t     g_clamp_count;
+    extern COLOR_MODE g_color_mode;
 
 } // namespace app::disp
 

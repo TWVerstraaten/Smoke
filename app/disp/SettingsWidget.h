@@ -8,10 +8,9 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QMap>
+#include <QVBoxLayout>
 #include <QWidget>
 #include <climits>
-
-class QVBoxLayout;
 
 namespace app::disp {
 

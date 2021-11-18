@@ -2,15 +2,16 @@
 // Created by pc on 07-11-21.
 //
 
-#ifndef H_APP_DISP_MAINWIDGET_H
-#define H_APP_DISP_MAINWIDGET_H
+#ifndef H_APP_DISP_SMOKEWIDGET_H
+#define H_APP_DISP_SMOKEWIDGET_H
 
 #include "../fl/Fluid.h"
-#include "DrawingBuffers.h"
 #include "MouseState.h"
-#include "Shader.h"
+#include "SmokeRenderer.h"
+#include "SmokeShader.h"
 
 #include <QBasicTimer>
+#include <QElapsedTimer>
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
@@ -18,12 +19,12 @@
 
 namespace app::disp {
 
-    class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions {
+    class SmokeWidget : public QOpenGLWidget, protected QOpenGLFunctions {
 
         Q_OBJECT
 
       public:
-        explicit MainWidget(QWidget* parent = nullptr);
+        explicit SmokeWidget(QWidget* parent = nullptr);
 
         void clear();
         void set_circle();
@@ -33,20 +34,20 @@ namespace app::disp {
         void mousePressEvent(QMouseEvent* e) override;
         void mouseReleaseEvent(QMouseEvent* e) override;
         void mouseMoveEvent(QMouseEvent* e) override;
-        void resizeEvent(QResizeEvent* e) override;
         void timerEvent(QTimerEvent* e) override;
         void initializeGL() override;
         void paintGL() override;
 
       private:
-        DrawingBuffers m_drawing_buffers;
-        Shader         m_shader;
-        fl::Fluid      m_fluid;
-        QBasicTimer    m_timer;
-        MouseState     m_mouse_state;
-        bool           m_open_gl_initialized = false;
+        QBasicTimer   m_timer;
+        QElapsedTimer m_elapsed_timer;
+        MouseState    m_mouse_state;
+        SmokeShader   m_shader;
+        SmokeRenderer m_drawing_buffers;
+        fl::Fluid     m_fluid;
+        size_t        m_refresh_rate = 10;
     };
 
 } // namespace app::disp
 
-#endif // H_APP_DISP_MAINWIDGET_H
+#endif // H_APP_DISP_SMOKEWIDGET_H

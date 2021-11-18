@@ -2,8 +2,8 @@
 // Created by pc on 03-11-21.
 //
 
-#ifndef H_APP_FL_SETTINGS_H
-#define H_APP_FL_SETTINGS_H
+#ifndef H_APP_FL_FLUIDSETTINGS_H
+#define H_APP_FL_FLUIDSETTINGS_H
 
 #include <cstddef>
 
@@ -14,12 +14,12 @@ namespace app::fl {
     static constexpr size_t g_half_points = g_point_count / 2;
     static constexpr float  g_cell_length = 1.0f / static_cast<float>(g_cell_count - 1);
 
-    extern bool  g_multi_thread;
     extern float g_particle_input;
     extern float g_force_input;
     extern float g_diffusion_coefficient;
     extern float g_viscosity_coefficient;
+    extern float g_dt;
 
 } // namespace app::fl
 
-#endif // H_APP_FL_SETTINGS_H
+#endif // H_APP_FL_FLUIDSETTINGS_H
