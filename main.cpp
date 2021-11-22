@@ -1,6 +1,5 @@
 #include "app/disp/MainWindow.h"
 #include "app/disp/SmokeWidget.h"
-#include "app/tools/Profile.h"
 
 #include <QApplication>
 #include <QSurfaceFormat>

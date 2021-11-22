@@ -6,7 +6,7 @@ find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pthread")
+set(CMAKE_CXX_FLAGS "-O3 -Werror -Wall -Wextra -pthread")
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(GLEW REQUIRED)
@@ -15,5 +15,5 @@ find_package(SFML COMPONENTS window graphics)
 
 link_libraries(GLEW OpenGL::GL sfml-window sfml-graphics Qt5::Core Qt5::Widgets)
 
-add_executable(smoke main.cpp app/fl/Fluid.cpp app/fl/Fluid.h app/fl/Matrix.cpp app/fl/Matrix.h app/fl/FluidSettings.h app/Math.cpp app/Math.h app/disp/SmokeWidget.cpp app/disp/SmokeWidget.h app/disp/SmokeShader.cpp app/disp/SmokeShader.h app/disp/SmokeRenderer.cpp app/disp/SmokeRenderer.h app/disp/MouseState.cpp app/disp/MouseState.h app/disp/MainWindow.cpp app/disp/MainWindow.h app/disp/SettingsWidget.cpp app/disp/SettingsWidget.h app/fl/FluidSettings.cpp app/disp/ShaderSettings.cpp app/disp/ShaderSettings.h app/tools/ScopedTimer.cpp app/tools/ScopedTimer.h app/disp/DisplaySettings.h app/disp/Shaders/SmokeVertexShader.h app/disp/Shaders/SmokeFragmentShader.h app/tools/Profile.h app/tools/ThreadPool.cpp app/tools/ThreadPool.h app/tools/ThreadSettings.h app/tools/ThreadSettings.cpp app/disp/LineShader.cpp app/disp/LineShader.h app/disp/Shaders/LineFragmentShader.h app/disp/Shaders/LineVertexShader.h app/disp/LineRenderer.cpp app/disp/LineRenderer.h app/tools/Ellipse.cpp app/tools/Ellipse.h app/tools/Point2F.cpp app/tools/Point2F.h app/disp/DisplaySettings.cpp app/tools/Ellipse.cpp app/tools/Ellipse.h app/tools/Point2F.cpp app/tools/Point2F.h)
+add_executable(smoke main.cpp app/fl/Fluid.cpp app/fl/Fluid.h app/fl/Matrix.cpp app/fl/Matrix.h app/fl/FlSettings.h app/Math.cpp app/Math.h app/disp/SmokeWidget.cpp app/disp/SmokeWidget.h app/disp/SmokeShader.cpp app/disp/SmokeShader.h app/disp/SmokeRenderer.cpp app/disp/SmokeRenderer.h app/disp/MouseState.cpp app/disp/MouseState.h app/disp/MainWindow.cpp app/disp/MainWindow.h app/disp/SettingsWidget.cpp app/disp/SettingsWidget.h app/fl/FlSettings.cpp app/tools/ScopedTimer.cpp app/tools/ScopedTimer.h app/disp/DispSettings.h app/disp/Shaders/SmokeVertexShader.h app/disp/Shaders/SmokeFragmentShader.h app/tools/Profile.h app/tools/ThreadPool.cpp app/tools/ThreadPool.h app/tools/ThreadSettings.h app/tools/ThreadSettings.cpp app/disp/LineShader.cpp app/disp/LineShader.h app/disp/Shaders/LineFragmentShader.h app/disp/Shaders/LineVertexShader.h app/disp/LineRenderer.cpp app/disp/LineRenderer.h app/tools/Ellipse.cpp app/tools/Ellipse.h app/tools/Point2F.cpp app/tools/Point2F.h app/disp/DispSettings.cpp app/tools/Ellipse.cpp app/tools/Ellipse.h app/tools/Point2F.cpp app/tools/Point2F.h app/disp/RendererBase.cpp app/disp/RendererBase.h)
 
