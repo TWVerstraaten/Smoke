@@ -12,6 +12,8 @@ namespace app::disp {
     class LineRenderer : public RendererBase {
 
       public:
+        LineRenderer();
+
         void fill_around_circle(const std::vector<size_t>& buffer);
         void fill_around_ellipse(const std::vector<size_t>& buffer, float a, float b, float theta, float dx, float dy);
     };

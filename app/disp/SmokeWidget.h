@@ -5,19 +5,14 @@
 #ifndef H_APP_DISP_SMOKEWIDGET_H
 #define H_APP_DISP_SMOKEWIDGET_H
 
-#include "../fl/Fluid.h"
 #include "LineRenderer.h"
-#include "LineShader.h"
 #include "MouseState.h"
 #include "SmokeRenderer.h"
-#include "SmokeShader.h"
 
 #include <QBasicTimer>
 #include <QElapsedTimer>
-#include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
-#include <QVector2D>
 
 namespace app::disp {
 
@@ -27,10 +22,12 @@ namespace app::disp {
 
       public:
         explicit SmokeWidget(QWidget* parent = nullptr);
+        ~SmokeWidget() override;
 
         void clear();
         void set_circle();
-        void zoom();
+
+        static void zoom();
 
       protected:
         void mousePressEvent(QMouseEvent* e) override;
@@ -41,15 +38,16 @@ namespace app::disp {
         void paintGL() override;
 
       private:
-        MouseState    m_mouse_state;
-        LineShader    m_line_shader;
-        LineRenderer  m_line_renderer;
-        SmokeShader   m_smoke_shader;
-        SmokeRenderer m_smoke_renderer;
-        fl::Fluid     m_fluid;
-        QElapsedTimer m_elapsed_timer;
-        QBasicTimer   m_timer;
-        size_t        m_refresh_rate_target = 10;
+        void draw_smoke();
+        void draw_lines();
+
+        std::unique_ptr<fl::Fluid> m_fluid;
+        const size_t               m_refresh_rate_target = 10;
+        QBasicTimer                m_timer;
+        QElapsedTimer              m_elapsed_timer;
+        MouseState                 m_mouse_state;
+        LineRenderer               m_line_renderer;
+        SmokeRenderer              m_smoke_renderer;
     };
 
 } // namespace app::disp

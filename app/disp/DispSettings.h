@@ -14,9 +14,10 @@ namespace app::disp {
     extern PIXEL_MODE g_pixel_mode;
     extern COLOR_MODE g_color_mode;
     extern bool       g_invert_colors;
-    extern bool       g_clamp_colors;
     extern float      g_zoom_depth;
     extern float      g_zoom_decay;
+    extern float      g_clamp_coefficient;
+    extern float      g_power_scale;
     extern size_t     g_pixel_size;
     extern size_t     g_clamp_count;
 

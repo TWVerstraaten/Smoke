@@ -10,13 +10,13 @@
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 struct Profiler {
     static inline std::unordered_map<std::string, size_t> s_profiler_map;
-    static void                                 show() {
+    static void                                           show() {
         std::vector<std::pair<std::string, size_t>> vec{s_profiler_map.begin(), s_profiler_map.end()};
         std::sort(vec.begin(), vec.end(), [](const auto& a, const auto& b) { return b.second < a.second; });
         std::cout << "=============== PROFILER =====================================\n";

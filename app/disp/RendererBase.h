@@ -5,7 +5,10 @@
 #ifndef H_APP_DISP_RENDERERBASE_H
 #define H_APP_DISP_RENDERERBASE_H
 
+#include "ShaderBase.h"
+
 #include <QOpenGLBuffer>
+#include <memory>
 #include <vector>
 
 namespace app::disp {
@@ -13,17 +16,18 @@ namespace app::disp {
     class RendererBase {
 
       public:
-        RendererBase();
-        ~RendererBase();
-
-        void                 init();
-        void                 bind();
         void                 unbind();
+        void                 bind();
+        bool                 init();
         [[nodiscard]] size_t index_count() const;
 
       protected:
-        std::vector<GLuint> m_quad_indices{};
-        std::vector<float>  m_quad_vertices{};
+        RendererBase();
+        ~RendererBase();
+
+        std::vector<GLuint>         m_quad_indices{};
+        std::vector<float>          m_quad_vertices{};
+        std::unique_ptr<ShaderBase> m_shader{};
 
       private:
         QOpenGLBuffer m_quad_index_buffer;

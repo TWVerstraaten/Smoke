@@ -4,29 +4,16 @@
 
 #include "SmokeRenderer.h"
 
-#include "../Math.h"
 #include "../fl/Fluid.h"
 #include "../tools/Profile.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
 #include "DispSettings.h"
+#include "SmokeShader.h"
 
 #include <cmath>
 
 namespace app::disp {
-
-    static float project(float x) {
-        x = std::abs(x);
-        x = math::clamp(x, 0.0f, 1.0f);
-        //        if (x < 0.0f) {
-        //            x *= -1;
-        //        }
-        if (g_clamp_colors) {
-            return std::floor(static_cast<float>(g_clamp_count) * std::sqrt(std::sqrt(x))) / static_cast<float>(g_clamp_count - 1);
-        } else {
-            return math::clamp(std::sqrt(std::sqrt(x)), 0.0f, 1.0f);
-        }
-    }
 
     static float f_x(const size_t i, const size_t horizontal_sample_points) {
         return static_cast<float>(2 * i) / static_cast<float>(horizontal_sample_points - 1) - 1.0f;
@@ -37,19 +24,16 @@ namespace app::disp {
     }
 
     static float f_r(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fl::Fluid& fluid) {
-        return project(
-            fluid.sample_density_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) /
-            150.0f);
+        return fluid.sample_density_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) /
+               120.0f;
     }
 
     static float f_g(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fl::Fluid& fluid) {
-        return project(fluid.sample_u_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) /
-                       12.0f);
+        return fluid.sample_u_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) / 7.0f;
     }
 
     static float f_b(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fl::Fluid& fluid) {
-        return project(fluid.sample_v_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) /
-                       12.0f);
+        return fluid.sample_v_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) / 7.0f;
     }
 
     static void fill_quad_normal_thread(size_t               start,
@@ -96,6 +80,10 @@ namespace app::disp {
                 quad_indices[index / 5]  = index / 5;
             }
         }
+    }
+
+    SmokeRenderer::SmokeRenderer() {
+        m_shader = std::unique_ptr<ShaderBase>(new SmokeShader);
     }
 
     void SmokeRenderer::fill(const fl::Fluid& fluid) {
@@ -149,10 +137,10 @@ namespace app::disp {
         }
     }
 
-
     void SmokeRenderer::set_sample_points(size_t width, size_t height) {
         m_horizontal_sample_points = (width + 2 * g_pixel_size) / std::max(1ul, g_pixel_size - 1);
         m_vertical_sample_points   = (height + 2 * g_pixel_size) / std::max(1ul, g_pixel_size - 1);
     }
+
 
 } // namespace app::disp

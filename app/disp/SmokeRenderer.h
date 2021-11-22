@@ -16,6 +16,8 @@ namespace app::disp {
     class SmokeRenderer : public RendererBase {
 
       public:
+        SmokeRenderer();
+
         void fill(const app::fl::Fluid& fluid);
         void set_sample_points(size_t width, size_t height);
 
@@ -23,8 +25,8 @@ namespace app::disp {
         void fill_quads_normal(const app::fl::Fluid& fluid);
         void fill_quads_pixel(const app::fl::Fluid& fluid);
 
-        size_t m_vertical_sample_points{};
-        size_t m_horizontal_sample_points{};
+        size_t m_vertical_sample_points   = 0;
+        size_t m_horizontal_sample_points = 0;
     };
 
 } // namespace app::disp

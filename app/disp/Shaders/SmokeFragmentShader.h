@@ -14,7 +14,6 @@ namespace app::disp {
 
     out vec4 outColor;
 
-    uniform bool  circle = false;
     uniform float time = 403.12;
 
     float r(vec2 co){

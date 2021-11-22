@@ -7,13 +7,26 @@
 #include "ThreadSettings.h"
 
 #include <algorithm>
-#include <memory>
 
 namespace app::tools {
+
+    std::unique_ptr<ThreadPool> ThreadPool::s_thread_pool;
 
     void run(ThreadPool& pool, std::atomic<bool>& ready_status);
 
     ThreadPool::ThreadPool(size_t num_cores) {
+        resize(num_cores);
+    }
+
+    ThreadPool::~ThreadPool() {
+        stop_all();
+    }
+
+    void ThreadPool::resize(size_t num_cores) {
+        stop_all();
+        m_stop = false;
+        m_threads.clear();
+        m_threads.reserve(num_cores);
         m_ready_statuses.resize(num_cores);
         for (size_t i = 0; i != num_cores; ++i) {
             m_ready_statuses[i] = true;
@@ -21,7 +34,7 @@ namespace app::tools {
         }
     }
 
-    ThreadPool::~ThreadPool() {
+    void ThreadPool::stop_all() {
         m_stop = true;
         m_task_condition_variable.notify_all();
         std::for_each(m_threads.begin(), m_threads.end(), std::mem_fn(&std::thread::join));

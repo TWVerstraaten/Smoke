@@ -4,10 +4,15 @@
 #include "../Math.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
+#include "LineShader.h"
 
 #include <cmath>
 
 namespace app::disp {
+
+    LineRenderer::LineRenderer() {
+        m_shader = std::unique_ptr<ShaderBase>(new LineShader{});
+    }
 
     void LineRenderer::fill_around_circle(const std::vector<size_t>& buffer) {
         m_quad_vertices.clear();

@@ -5,28 +5,15 @@
 #ifndef H_APP_DISP_SMOKESHADER_H
 #define H_APP_DISP_SMOKESHADER_H
 
-#include <QOpenGLShaderProgram>
+#include "ShaderBase.h"
 
 namespace app::disp {
 
-    class SmokeShader {
+    class SmokeShader : public ShaderBase {
 
       public:
-        bool init();
-        void update(float dt);
-        void set_locations();
-        void zoom();
-        void set_circle();
-        void set_uniforms();
-        void unbind();
-        void bind();
-
-      private:
-        float                m_offset       = 0.0f;
-        float                m_zoom         = 0.0f;
-        float                m_circle_timer = 0.0f;
-        float                m_time         = 0.0f;
-        QOpenGLShaderProgram m_program;
+        bool init() override;
+        void set_uniforms() override;
     };
 
 } // namespace app::disp

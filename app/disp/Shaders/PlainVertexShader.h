@@ -2,18 +2,17 @@
 // Created by pc on 18-11-21.
 //
 
-#ifndef H_APP_DISP_SHADERS_LINEVERTEXSHADER_H
-#define H_APP_DISP_SHADERS_LINEVERTEXSHADER_H
+#ifndef H_APP_DISP_SHADERS_PLAINVERTEXSHADER_H
+#define H_APP_DISP_SHADERS_PLAINVERTEXSHADER_H
 
 namespace app::disp {
 
-    static const GLchar* g_line_vertex_shader = R"glsl(
+    static const GLchar* g_plain_vertex_shader = R"glsl(
     #version 430 core
     in vec2 position;
     in vec3 color;
 
     out vec3 Color;
-    out vec2 normCoord;
 
     uniform float zoom = 1.0;
 
@@ -26,4 +25,4 @@ namespace app::disp {
 
 }
 
-#endif // H_APP_DISP_SHADERS_LINEVERTEXSHADER_H
+#endif // H_APP_DISP_SHADERS_PLAINVERTEXSHADER_H
