@@ -41,7 +41,7 @@ namespace app::disp {
         void draw_smoke();
         void draw_lines();
 
-        std::unique_ptr<fl::Fluid> m_fluid;
+        std::unique_ptr<fluid::Fluid> m_fluid;
         const size_t               m_refresh_rate_target = 10;
         QBasicTimer                m_timer;
         QElapsedTimer              m_elapsed_timer;

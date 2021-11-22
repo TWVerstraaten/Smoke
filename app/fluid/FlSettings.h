@@ -2,12 +2,12 @@
 // Created by pc on 03-11-21.
 //
 
-#ifndef H_APP_FL_FLSETTINGS_H
-#define H_APP_FL_FLSETTINGS_H
+#ifndef H_APP_FLUID_FLSETTINGS_H
+#define H_APP_FLUID_FLSETTINGS_H
 
 #include <cstddef>
 
-namespace app::fl {
+namespace app::fluid {
 
     static constexpr size_t g_point_count = 150;
     static constexpr size_t g_cell_count  = g_point_count - 1;
@@ -19,6 +19,6 @@ namespace app::fl {
     extern float g_viscosity_coefficient;
     extern float g_dt;
 
-} // namespace app::fl
+} // namespace app::fluid
 
-#endif // H_APP_FL_FLSETTINGS_H
+#endif // H_APP_FLUID_FLSETTINGS_H

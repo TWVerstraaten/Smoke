@@ -25,7 +25,7 @@ namespace app::disp {
         m_layout->addWidget(group_box);
     }
 
-    void SettingsWidget::add(const QString& name, size_t& value, size_t min, size_t max, std::function<void(size_t)> call_back) {
+    void SettingsWidget::add(const QString& name, size_t& value, size_t min, size_t max, const std::function<void(size_t)>& call_back) {
         auto* spin_box = new QSpinBox(this);
         spin_box->setValue(static_cast<int>(value));
         spin_box->setMinimum(static_cast<int>(min));

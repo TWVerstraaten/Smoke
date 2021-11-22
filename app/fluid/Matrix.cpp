@@ -8,7 +8,7 @@
 
 #include <cassert>
 
-namespace app::fl {
+namespace app::fluid {
 
     Matrix::Row<float> Matrix::operator[](size_t row) {
         assert(row < g_point_count);
@@ -53,4 +53,4 @@ namespace app::fl {
         }
     }
 
-} // namespace app::fl
+} // namespace app::fluid

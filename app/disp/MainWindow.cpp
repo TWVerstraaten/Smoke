@@ -5,7 +5,7 @@
 #include "MainWindow.h"
 
 #include "../State.h"
-#include "../fl/FlSettings.h"
+#include "../fluid/FlSettings.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
 #include "DispSettings.h"
@@ -20,11 +20,11 @@ namespace app::disp {
         setCentralWidget(m_smoke_widget);
 
         m_settings_widget->add_section("Simulation");
-        m_settings_widget->add("Force", app::fl::g_force_input);
-        m_settings_widget->add("Particles", app::fl::g_particle_input);
-        m_settings_widget->add("Visc", app::fl::g_viscosity_coefficient);
-        m_settings_widget->add("Diff", app::fl::g_diffusion_coefficient);
-        m_settings_widget->add("Time step", app::fl::g_dt, 0.001, 2.0);
+        m_settings_widget->add("Force", app::fluid::g_force_input);
+        m_settings_widget->add("Particles", app::fluid::g_particle_input);
+        m_settings_widget->add("Visc", app::fluid::g_viscosity_coefficient);
+        m_settings_widget->add("Diff", app::fluid::g_diffusion_coefficient);
+        m_settings_widget->add("Time step", app::fluid::g_dt, 0.001, 2.0);
 
         //        m_settings_widget->add("Zoom Depth", g_zoom_depth);
         //        m_settings_widget->add("Zoom Decay", g_zoom_decay);

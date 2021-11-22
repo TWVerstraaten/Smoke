@@ -22,7 +22,8 @@ namespace app::disp {
         SettingsWidget();
 
         void add_section(const QString& name);
-        void add(const QString& name, size_t& value, size_t min = 0, size_t max = std::numeric_limits<int>::max(), std::function<void(size_t)> call_back = {});
+        void add(
+            const QString& name, size_t& value, size_t min = 0, size_t max = std::numeric_limits<int>::max(), const std::function<void(size_t)>& call_back = [](size_t) {});
         void add(const QString& name, float& value, float min = std::numeric_limits<float>::lowest(), float max = std::numeric_limits<float>::max(), bool as_slider = false);
         void add(const QString& name, bool& value);
         void add(const QString& name, const std::function<void()>& call_back);

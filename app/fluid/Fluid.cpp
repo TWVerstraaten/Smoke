@@ -8,7 +8,7 @@
 #include <cassert>
 #include <cmath>
 
-namespace app::fl {
+namespace app::fluid {
 
     // See Jos Stam's paper "Real-Time Fluid Dynamics for Games" for the algorithm below
 
@@ -316,4 +316,4 @@ namespace app::fl {
         return {i, j};
     }
 
-} // namespace app::fl
+} // namespace app::fluid

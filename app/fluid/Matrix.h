@@ -2,15 +2,15 @@
 // Created by pc on 03-11-21.
 //
 
-#ifndef H_APP_FL_MATRIX_H
-#define H_APP_FL_MATRIX_H
+#ifndef H_APP_FLUID_MATRIX_H
+#define H_APP_FLUID_MATRIX_H
 
 #include "FlSettings.h"
 
 #include <array>
 #include <cassert>
 
-namespace app::fl {
+namespace app::fluid {
 
     class Matrix {
 
@@ -35,6 +35,6 @@ namespace app::fl {
         std::array<float, g_point_count * g_point_count> m_array{};
     };
 
-} // namespace app::fl
+} // namespace app::fluid
 
-#endif // H_APP_FL_MATRIX_H
+#endif // H_APP_FLUID_MATRIX_H

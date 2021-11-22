@@ -5,7 +5,7 @@
 #include "SmokeWidget.h"
 
 #include "../State.h"
-#include "../fl/Fluid.h"
+#include "../fluid/Fluid.h"
 #include "../tools/Profile.h"
 #include "DispSettings.h"
 
@@ -14,7 +14,7 @@
 
 namespace app::disp {
 
-    SmokeWidget::SmokeWidget(QWidget* parent) : QOpenGLWidget(parent), m_fluid(new fl::Fluid) {
+    SmokeWidget::SmokeWidget(QWidget* parent) : QOpenGLWidget(parent), m_fluid(new fluid::Fluid) {
         m_elapsed_timer.start();
     }
 

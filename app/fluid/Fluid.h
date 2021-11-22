@@ -1,10 +1,10 @@
-#ifndef H_APP_FL_FLUID_H
-#define H_APP_FL_FLUID_H
+#ifndef H_APP_FLUID_FLUID_H
+#define H_APP_FLUID_FLUID_H
 
 #include "FlSettings.h"
 #include "Matrix.h"
 
-namespace app::fl {
+namespace app::fluid {
 
     class Fluid {
 
@@ -33,6 +33,6 @@ namespace app::fl {
         Matrix m_density_previous{};
     };
 
-} // namespace app::fl
+} // namespace app::fluid
 
 #endif

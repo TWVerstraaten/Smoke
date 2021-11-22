@@ -4,7 +4,7 @@
 
 #include "SmokeRenderer.h"
 
-#include "../fl/Fluid.h"
+#include "../fluid/Fluid.h"
 #include "../tools/Profile.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
@@ -23,16 +23,16 @@ namespace app::disp {
         return static_cast<float>(j) * 2.0f / static_cast<float>(vertical_sample_points - 1) - 1.0f;
     }
 
-    static float f_r(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fl::Fluid& fluid) {
+    static float f_r(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fluid::Fluid& fluid) {
         return fluid.sample_density_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) /
                120.0f;
     }
 
-    static float f_g(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fl::Fluid& fluid) {
+    static float f_g(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fluid::Fluid& fluid) {
         return fluid.sample_u_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) / 7.0f;
     }
 
-    static float f_b(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fl::Fluid& fluid) {
+    static float f_b(const size_t i, const size_t j, const size_t horizontal_sample_points, const size_t vertical_sample_points, const fluid::Fluid& fluid) {
         return fluid.sample_v_at(static_cast<float>(i) / static_cast<float>(horizontal_sample_points), static_cast<float>(j) / static_cast<float>(vertical_sample_points)) / 7.0f;
     }
 
@@ -42,7 +42,7 @@ namespace app::disp {
                                         size_t               vertical_sample_points,
                                         std::vector<float>&  quad_vertices,
                                         std::vector<GLuint>& quad_indices,
-                                        const fl::Fluid&     fluid) {
+                                        const fluid::Fluid&     fluid) {
         for (size_t j = start; j != end; ++j) {
             for (size_t i = 0; i != horizontal_sample_points; ++i) {
                 const size_t index       = 5 * (i + j * horizontal_sample_points);
@@ -68,7 +68,7 @@ namespace app::disp {
                                        size_t               vertical_sample_points,
                                        std::vector<float>&  quad_vertices,
                                        std::vector<GLuint>& quad_indices,
-                                       const fl::Fluid&     fluid) {
+                                       const fluid::Fluid&     fluid) {
         for (size_t j = start; j != end; ++j) {
             for (size_t i = 0; i != horizontal_sample_points; ++i) {
                 size_t index             = 5 * (i * vertical_sample_points + j);
@@ -86,7 +86,7 @@ namespace app::disp {
         m_shader = std::unique_ptr<ShaderBase>(new SmokeShader);
     }
 
-    void SmokeRenderer::fill(const fl::Fluid& fluid) {
+    void SmokeRenderer::fill(const fluid::Fluid& fluid) {
         PROFILE_FUNCTION();
         if (g_pixel_mode == PIXEL_MODE::NORMAL) {
             fill_quads_normal(fluid);
@@ -95,7 +95,7 @@ namespace app::disp {
         }
     }
 
-    void SmokeRenderer::fill_quads_normal(const fl::Fluid& fluid) {
+    void SmokeRenderer::fill_quads_normal(const fluid::Fluid& fluid) {
         m_quad_vertices.resize(5 * m_horizontal_sample_points * m_vertical_sample_points);
         m_quad_indices.resize(4 * (m_horizontal_sample_points - 1) * (m_vertical_sample_points - 1));
         if (not tools::g_multi_thread) {
@@ -116,7 +116,7 @@ namespace app::disp {
         }
     }
 
-    void SmokeRenderer::fill_quads_pixel(const fl::Fluid& fluid) {
+    void SmokeRenderer::fill_quads_pixel(const fluid::Fluid& fluid) {
         m_quad_vertices.resize(5 * m_horizontal_sample_points * m_vertical_sample_points);
         m_quad_indices.resize(m_horizontal_sample_points * m_vertical_sample_points);
         if (not tools::g_multi_thread) {
