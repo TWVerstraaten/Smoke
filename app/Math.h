@@ -21,6 +21,10 @@ namespace app::math {
         return a * a;
     }
 
+    std::pair<float, float> rotate(float x, float y, float theta);
+
+
+
 } // namespace app::math
 
 #endif // H_APP_MATH_H

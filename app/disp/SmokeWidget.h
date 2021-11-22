@@ -6,6 +6,8 @@
 #define H_APP_DISP_SMOKEWIDGET_H
 
 #include "../fl/Fluid.h"
+#include "LineRenderer.h"
+#include "LineShader.h"
 #include "MouseState.h"
 #include "SmokeRenderer.h"
 #include "SmokeShader.h"
@@ -39,13 +41,15 @@ namespace app::disp {
         void paintGL() override;
 
       private:
-        QBasicTimer   m_timer;
-        QElapsedTimer m_elapsed_timer;
         MouseState    m_mouse_state;
-        SmokeShader   m_shader;
-        SmokeRenderer m_drawing_buffers;
+        LineShader    m_line_shader;
+        LineRenderer  m_line_renderer;
+        SmokeShader   m_smoke_shader;
+        SmokeRenderer m_smoke_renderer;
         fl::Fluid     m_fluid;
-        size_t        m_refresh_rate = 10;
+        QElapsedTimer m_elapsed_timer;
+        QBasicTimer   m_timer;
+        size_t        m_refresh_rate_target = 10;
     };
 
 } // namespace app::disp

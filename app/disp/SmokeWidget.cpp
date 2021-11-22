@@ -8,6 +8,7 @@
 
 #include <QKeyEvent>
 #include <QPainter>
+#include <cmath>
 #include <iostream>
 
 namespace app::disp {
@@ -19,24 +20,42 @@ namespace app::disp {
     void SmokeWidget::initializeGL() {
         initializeOpenGLFunctions();
         glClearColor(0, 0, 0, 1);
-        if (not m_shader.init()) {
+        if ((not m_smoke_shader.init()) || (not m_line_shader.init())) {
             close();
         }
-        m_drawing_buffers.init();
-        m_timer.start(m_refresh_rate, this);
+        m_smoke_renderer.init();
+        m_line_renderer.init();
+        m_timer.start(m_refresh_rate_target, this);
     }
 
     void SmokeWidget::paintGL() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        m_shader.bind();
-        m_shader.set_uniforms();
-        m_drawing_buffers.fill_quads(m_fluid);
-        m_drawing_buffers.bind_quads();
-        m_shader.set_locations();
-        glDrawElements(GL_QUADS, static_cast<GLsizei>(m_drawing_buffers.quad_count()), GL_UNSIGNED_INT, nullptr);
-        m_drawing_buffers.unbind();
-        m_shader.unbind();
+        {
+            m_smoke_shader.bind();
+            m_smoke_shader.set_uniforms();
+            m_smoke_renderer.fill_quads(m_fluid);
+            m_smoke_renderer.bind_quads();
+            m_smoke_shader.set_locations();
+            glDrawElements(GL_QUADS, static_cast<GLsizei>(m_smoke_renderer.index_count()), GL_UNSIGNED_INT, nullptr);
+            m_smoke_renderer.unbind();
+            m_smoke_shader.unbind();
+        }
+        {
+            m_line_shader.bind();
+            m_line_shader.set_uniforms();
+            std::vector<size_t> array;
+            for (size_t i = 0; i != 121; ++i) {
+                array.push_back(53.0f * (12 + std::sin(0.435 * static_cast<float>(i))));
+            }
+            static float theta = 0.0f;
+            m_line_renderer.fill_around_ellipse(array, 0.4, 0.8, theta, 0.8, 0.6);
+            theta += 0.02;
+            m_line_renderer.bind_lines();
+            m_line_shader.set_locations();
+            glDrawElements(GL_LINE_STRIP, static_cast<GLsizei>(m_line_renderer.index_count()), GL_UNSIGNED_INT, nullptr);
+            m_line_renderer.unbind();
+            m_line_shader.unbind();
+        }
         PRINT_PROFILE();
         START_PROFILING();
 
@@ -47,7 +66,8 @@ namespace app::disp {
 
     void SmokeWidget::timerEvent(QTimerEvent* e) {
         Q_UNUSED(e)
-        m_shader.update(static_cast<float>(m_elapsed_timer.elapsed()) / 1000.0f);
+        m_smoke_shader.update(static_cast<float>(m_elapsed_timer.elapsed()) / 1000.0f);
+        m_line_shader.update(static_cast<float>(m_elapsed_timer.elapsed()) / 1000.0f);
         m_elapsed_timer.restart();
 
         {
@@ -93,11 +113,12 @@ namespace app::disp {
 
     void SmokeWidget::set_circle() {
         m_fluid.set_circle();
-        m_shader.set_circle();
+        m_smoke_shader.set_circle();
     }
 
     void SmokeWidget::zoom() {
-        m_shader.zoom();
+        m_smoke_shader.zoom();
+        m_line_shader.zoom();
     }
 
 } // namespace app::disp

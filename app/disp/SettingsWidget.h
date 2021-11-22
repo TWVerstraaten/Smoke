@@ -32,6 +32,7 @@ namespace app::disp {
             for (auto it = names.begin(); it != names.end(); ++it) {
                 combo_box->addItem(it.key());
             }
+            combo_box->setCurrentText(names.key(the_enum));
             connect(combo_box, QOverload<const QString&>::of(&QComboBox::activated), [&, names](const QString& selected) { the_enum = names[selected]; });
             m_current_box_layout->addRow(name, combo_box);
         }

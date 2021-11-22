@@ -8,8 +8,6 @@
 #include "Shaders/SmokeFragmentShader.h"
 #include "Shaders/SmokeVertexShader.h"
 
-#include <iostream>
-
 namespace app::disp {
 
     bool SmokeShader::init() {

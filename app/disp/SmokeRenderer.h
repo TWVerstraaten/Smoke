@@ -25,8 +25,8 @@ namespace app::disp {
         void                 init();
         void                 bind_quads();
         void                 unbind();
-        void                 fill_quads(const app::fl::Fluid& m_fluid);
-        [[nodiscard]] size_t quad_count() const;
+        void                 fill_quads(const app::fl::Fluid& fluid);
+        [[nodiscard]] size_t index_count() const;
 
       private:
         void init_buffers_and_vectors();

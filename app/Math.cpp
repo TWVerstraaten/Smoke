@@ -14,4 +14,10 @@ namespace app::math {
         return {std::round(i), f};
     }
 
+    std::pair<float, float> rotate(float x, float y, float theta) {
+        float c = std::cos(theta);
+        float s = std::sin(theta);
+        return {c * x - s * y, s * x + c * y};
+    }
+
 } // namespace app::math

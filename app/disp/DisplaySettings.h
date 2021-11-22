@@ -8,9 +8,11 @@
 #include <cstddef>
 
 namespace app::disp {
+    enum class PIXEL_MODE { NORMAL, PIXEL };
 
-    constexpr size_t g_vertical_sample_points   = 500;
-    constexpr size_t g_horizontal_sample_points = 500;
+    extern PIXEL_MODE g_pixel_mode;
+    extern size_t     g_vertical_sample_points;
+    extern size_t     g_horizontal_sample_points;
 
 } // namespace app::disp
 
