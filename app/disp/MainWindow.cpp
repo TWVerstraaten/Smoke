@@ -4,9 +4,9 @@
 
 #include "MainWindow.h"
 
-#include "../fl/FluidSettings.h"
+#include "../fl/FlSettings.h"
 #include "../tools/ThreadSettings.h"
-#include "DisplaySettings.h"
+#include "DispSettings.h"
 #include "SettingsWidget.h"
 #include "SmokeWidget.h"
 

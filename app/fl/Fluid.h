@@ -1,7 +1,7 @@
 #ifndef H_APP_FL_FLUID_H
 #define H_APP_FL_FLUID_H
 
-#include "FluidSettings.h"
+#include "FlSettings.h"
 #include "Matrix.h"
 
 namespace app::fl {
@@ -15,11 +15,10 @@ namespace app::fl {
         void                clear_previous();
         void                clear_current();
         void                step();
+        void                set_circle();
         [[nodiscard]] float sample_density_at(float x, float y) const;
         [[nodiscard]] float sample_u_at(float x, float y) const;
         [[nodiscard]] float sample_v_at(float x, float y) const;
-
-        void set_circle();
 
       private:
         void density_step();

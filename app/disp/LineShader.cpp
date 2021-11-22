@@ -4,7 +4,7 @@
 
 #include "LineShader.h"
 
-#include "DisplaySettings.h"
+#include "DispSettings.h"
 #include "Shaders/LineFragmentShader.h"
 #include "Shaders/LineVertexShader.h"
 

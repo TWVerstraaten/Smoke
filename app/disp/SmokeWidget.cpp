@@ -5,7 +5,7 @@
 #include "SmokeWidget.h"
 
 #include "../tools/Profile.h"
-#include "DisplaySettings.h"
+#include "DispSettings.h"
 
 #include <QKeyEvent>
 #include <QPainter>
@@ -35,8 +35,8 @@ namespace app::disp {
             m_smoke_shader.bind();
             m_smoke_shader.set_uniforms();
             m_smoke_renderer.set_sample_points(width(), height());
-            m_smoke_renderer.fill_quads(m_fluid);
-            m_smoke_renderer.bind_quads();
+            m_smoke_renderer.fill(m_fluid);
+            m_smoke_renderer.bind();
             m_smoke_shader.set_locations();
             if (g_pixel_mode == PIXEL_MODE::PIXEL) {
                 glPointSize(static_cast<float>(g_pixel_size));
@@ -58,7 +58,7 @@ namespace app::disp {
             static float theta = 0.0f;
             m_line_renderer.fill_around_ellipse(array, 0.4, 0.8, theta, 0.8, 0.6);
             theta += 0.02;
-            m_line_renderer.bind_lines();
+            m_line_renderer.bind();
             m_line_shader.set_locations();
             glDrawElements(GL_LINE_STRIP, static_cast<GLsizei>(m_line_renderer.index_count()), GL_UNSIGNED_INT, nullptr);
             m_line_renderer.unbind();

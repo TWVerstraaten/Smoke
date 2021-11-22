@@ -14,16 +14,13 @@ namespace app::math {
         return value <= min ? min : value >= max ? max : value;
     }
 
-    std::pair<int, float> mod_one(float x);
-
     template <typename T>
     static T square(T a) {
         return a * a;
     }
 
+    std::pair<int, float>   mod_one(float x);
     std::pair<float, float> rotate(float x, float y, float theta);
-
-
 
 } // namespace app::math
 

@@ -4,7 +4,7 @@
 
 #include "SmokeShader.h"
 
-#include "DisplaySettings.h"
+#include "DispSettings.h"
 #include "Shaders/SmokeFragmentShader.h"
 #include "Shaders/SmokeVertexShader.h"
 

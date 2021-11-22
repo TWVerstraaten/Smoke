@@ -2,8 +2,8 @@
 // Created by pc on 03-11-21.
 //
 
-#ifndef H_APP_FL_FLUIDSETTINGS_H
-#define H_APP_FL_FLUIDSETTINGS_H
+#ifndef H_APP_FL_FLSETTINGS_H
+#define H_APP_FL_FLSETTINGS_H
 
 #include <cstddef>
 
@@ -21,4 +21,4 @@ namespace app::fl {
 
 } // namespace app::fl
 
-#endif // H_APP_FL_FLUIDSETTINGS_H
+#endif // H_APP_FL_FLSETTINGS_H

@@ -9,32 +9,11 @@
 #include "../tools/Profile.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
-#include "DisplaySettings.h"
+#include "DispSettings.h"
 
 #include <cmath>
 
 namespace app::disp {
-
-    SmokeRenderer::SmokeRenderer() : m_quad_index_buffer(QOpenGLBuffer::IndexBuffer) {
-    }
-
-    SmokeRenderer::~SmokeRenderer() {
-        m_quad_array_buffer.destroy();
-        m_quad_index_buffer.destroy();
-    }
-
-    void SmokeRenderer::init() {
-        init_buffers_and_vectors();
-    }
-
-    void SmokeRenderer::init_buffers_and_vectors() {
-        m_quad_array_buffer.create();
-        m_quad_index_buffer.create();
-    }
-
-    size_t SmokeRenderer::index_count() const {
-        return m_quad_indices.size();
-    }
 
     static float project(float x) {
         x = std::abs(x);
@@ -119,7 +98,7 @@ namespace app::disp {
         }
     }
 
-    void SmokeRenderer::fill_quads(const fl::Fluid& fluid) {
+    void SmokeRenderer::fill(const fl::Fluid& fluid) {
         PROFILE_FUNCTION();
         if (g_pixel_mode == PIXEL_MODE::NORMAL) {
             fill_quads_normal(fluid);
@@ -170,17 +149,6 @@ namespace app::disp {
         }
     }
 
-    void SmokeRenderer::bind_quads() {
-        m_quad_array_buffer.bind();
-        m_quad_array_buffer.allocate(m_quad_vertices.data(), m_quad_vertices.size() * sizeof(float));
-        m_quad_index_buffer.bind();
-        m_quad_index_buffer.allocate(m_quad_indices.data(), m_quad_indices.size() * sizeof(GLuint));
-    }
-
-    void SmokeRenderer::unbind() {
-        m_quad_array_buffer.release();
-        m_quad_index_buffer.release();
-    }
 
     void SmokeRenderer::set_sample_points(size_t width, size_t height) {
         m_horizontal_sample_points = (width + 2 * g_pixel_size) / std::max(1ul, g_pixel_size - 1);

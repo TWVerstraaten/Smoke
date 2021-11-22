@@ -2,8 +2,8 @@
 // Created by pc on 17-11-21.
 //
 
-#ifndef H_APP_DISP_DISPLAYSETTINGS_H
-#define H_APP_DISP_DISPLAYSETTINGS_H
+#ifndef H_APP_DISP_DISPSETTINGS_H
+#define H_APP_DISP_DISPSETTINGS_H
 
 #include <cstddef>
 
@@ -22,4 +22,4 @@ namespace app::disp {
 
 } // namespace app::disp
 
-#endif // H_APP_DISP_DISPLAYSETTINGS_H
+#endif // H_APP_DISP_DISPSETTINGS_H

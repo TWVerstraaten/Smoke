@@ -2,7 +2,7 @@
 // Created by pc on 22-11-21.
 //
 
-#include "DisplaySettings.h"
+#include "DispSettings.h"
 
 namespace app::disp {
 
