@@ -57,16 +57,16 @@ namespace app::disp {
 
     void main()
     {
-//        outColor = vec4(Color, 1.0f);
-        float c = 0.5 + clamp(0.9f * sin((normCoord.x + normCoord.y) + 2.2 * time), -0.5f, 0.5f);
-        outColor = c * vec4(Color, 1.0) + (1-c) * vec4(1.0f - Color.gbr, 1.0);
-
-        if (c > 0.01 && c < 0.99){
-            if (red_square(gl_FragCoord.xy, time / 10.0)){
-                outColor = vec4(1.0f - outColor.rgb, 1.0);
-            } else {
-            }
-        }
+        outColor = vec4(Color, 1.0f);
+//        float c = 0.5 + clamp(0.9f * sin((normCoord.x + normCoord.y) + 2.2 * time), -0.5f, 0.5f);
+//        outColor = c * vec4(Color, 1.0) + (1-c) * vec4(1.0f - Color.gbr, 1.0);
+//
+//        if (c > 0.01 && c < 0.99){
+//            if (red_square(gl_FragCoord.xy, time / 10.0)){
+//                outColor = vec4(1.0f - outColor.rgb, 1.0);
+//            } else {
+//            }
+//        }
     }
 )glsl";
 

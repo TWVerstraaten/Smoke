@@ -25,11 +25,11 @@ namespace app::disp {
         m_layout->addWidget(group_box);
     }
 
-    void SettingsWidget::add(const QString& name, size_t& value, int min, int max) {
+    void SettingsWidget::add(const QString& name, size_t& value, size_t min, size_t max) {
         auto* spin_box = new QSpinBox(this);
-        spin_box->setValue(value);
-        spin_box->setMinimum(min);
-        spin_box->setMaximum(max);
+        spin_box->setValue(static_cast<int>(value));
+        spin_box->setMinimum(static_cast<int>(min));
+        spin_box->setMaximum(static_cast<int>(max));
         connect(spin_box, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int v) { value = v; });
         m_current_box_layout->addRow(name, spin_box);
     }
@@ -47,7 +47,7 @@ namespace app::disp {
         double_spin_box->setMinimum(min);
         double_spin_box->setMaximum(max);
         double_spin_box->setValue(value);
-        connect(double_spin_box, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [&](double d) { value = d; });
+        connect(double_spin_box, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [&](double d) { value = static_cast<float>(d); });
         m_current_box_layout->addRow(name, double_spin_box);
     }
 

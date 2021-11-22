@@ -2,12 +2,8 @@
 #include "LineRenderer.h"
 
 #include "../Math.h"
-#include "../fl/Fluid.h"
-#include "../tools/Profile.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
-#include "DisplaySettings.h"
-#include "ShaderSettings.h"
 
 #include <cmath>
 

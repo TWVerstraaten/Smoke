@@ -6,10 +6,9 @@
 
 #include "../fl/FluidSettings.h"
 #include "../tools/ThreadSettings.h"
-#include "SettingsWidget.h"
-#include "ShaderSettings.h"
-#include "SmokeWidget.h"
 #include "DisplaySettings.h"
+#include "SettingsWidget.h"
+#include "SmokeWidget.h"
 
 #include <QKeyEvent>
 
@@ -29,16 +28,15 @@ namespace app::disp {
         //        m_settings_widget->add("Zoom Decay", g_zoom_decay);
         m_settings_widget->add_section("Performance");
         m_settings_widget->add("Multi thread", tools::g_multi_thread);
+        m_settings_widget->add("Thread count", tools::g_thread_count, 1);
 
         m_settings_widget->add_section("Display");
         m_settings_widget->add("Clamp colors", g_clamp_colors);
         m_settings_widget->add("Clamp counts", g_clamp_count, 2);
         m_settings_widget->add("Invert colors", g_invert_colors);
-        m_settings_widget->add("Color mode", g_color_mode, {{"gray",  COLOR_MODE::GRAY},
-                                                            {"rgb",   COLOR_MODE::RGB},
-                                                            {"space", COLOR_MODE::SPACE}});
-        m_settings_widget->add("Draw mode", g_pixel_mode, {{"normal", PIXEL_MODE::NORMAL},
-                                                     {"pixel", PIXEL_MODE::PIXEL}});
+        m_settings_widget->add("Color mode", g_color_mode, {{"gray", COLOR_MODE::GRAY}, {"rgb", COLOR_MODE::RGB}, {"space", COLOR_MODE::SPACE}});
+        m_settings_widget->add("Draw mode", g_pixel_mode, {{"normal", PIXEL_MODE::NORMAL}, {"pixel", PIXEL_MODE::PIXEL}});
+        m_settings_widget->add("Pixel size", g_pixel_size, 1);
 
         m_settings_widget->add_section("Shots");
         m_settings_widget->add("Circle", [this]() { m_smoke_widget->set_circle(); });
@@ -52,7 +50,7 @@ namespace app::disp {
         resize(1000, 1000);
     }
 
-    void MainWindow::keyPressEvent(QKeyEvent *e) {
+    void MainWindow::keyPressEvent(QKeyEvent* e) {
         switch (e->key()) {
             case Qt::Key::Key_Space:
                 m_smoke_widget->clear();
@@ -65,7 +63,7 @@ namespace app::disp {
         }
     }
 
-    void MainWindow::closeEvent(QCloseEvent *event) {
+    void MainWindow::closeEvent(QCloseEvent* event) {
         m_settings_widget->close();
         QWidget::closeEvent(event);
     }

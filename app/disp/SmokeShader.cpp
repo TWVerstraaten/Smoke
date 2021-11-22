@@ -4,7 +4,7 @@
 
 #include "SmokeShader.h"
 
-#include "ShaderSettings.h"
+#include "DisplaySettings.h"
 #include "Shaders/SmokeFragmentShader.h"
 #include "Shaders/SmokeVertexShader.h"
 
@@ -70,7 +70,7 @@ namespace app::disp {
         m_program.setUniformValue("offset", m_offset);
         m_program.setUniformValue("zoom", 1.0f + m_zoom);
         m_program.setUniformValue("circle", m_circle_timer > 0.0f);
-        m_program.setUniformValue("color_mode", g_color_mode);
+        m_program.setUniformValue("color_mode", static_cast<int>(g_color_mode));
         m_program.setUniformValue("invert_colors", g_invert_colors);
     }
 

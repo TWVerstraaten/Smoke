@@ -4,7 +4,6 @@
 
 #include "ThreadPool.h"
 
-#include "Profile.h"
 #include "ThreadSettings.h"
 
 #include <algorithm>

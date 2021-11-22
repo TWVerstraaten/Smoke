@@ -5,11 +5,11 @@
 #include "SmokeWidget.h"
 
 #include "../tools/Profile.h"
+#include "DisplaySettings.h"
 
 #include <QKeyEvent>
 #include <QPainter>
 #include <cmath>
-#include <iostream>
 
 namespace app::disp {
 
@@ -19,13 +19,14 @@ namespace app::disp {
 
     void SmokeWidget::initializeGL() {
         initializeOpenGLFunctions();
+        QOpenGLFunctions::glEnable(GL_POINT_SIZE);
         glClearColor(0, 0, 0, 1);
         if ((not m_smoke_shader.init()) || (not m_line_shader.init())) {
             close();
         }
         m_smoke_renderer.init();
         m_line_renderer.init();
-        m_timer.start(m_refresh_rate_target, this);
+        m_timer.start(static_cast<int>(m_refresh_rate_target), this);
     }
 
     void SmokeWidget::paintGL() {
@@ -33,10 +34,17 @@ namespace app::disp {
         {
             m_smoke_shader.bind();
             m_smoke_shader.set_uniforms();
+            m_smoke_renderer.set_sample_points(width(), height());
             m_smoke_renderer.fill_quads(m_fluid);
             m_smoke_renderer.bind_quads();
             m_smoke_shader.set_locations();
-            glDrawElements(GL_QUADS, static_cast<GLsizei>(m_smoke_renderer.index_count()), GL_UNSIGNED_INT, nullptr);
+            if (g_pixel_mode == PIXEL_MODE::PIXEL) {
+                glPointSize(static_cast<float>(g_pixel_size));
+                glDrawElements(GL_POINTS, static_cast<GLsizei>(m_smoke_renderer.index_count()), GL_UNSIGNED_INT, nullptr);
+            } else {
+                glPointSize(1);
+                glDrawElements(GL_QUADS, static_cast<GLsizei>(m_smoke_renderer.index_count()), GL_UNSIGNED_INT, nullptr);
+            }
             m_smoke_renderer.unbind();
             m_smoke_shader.unbind();
         }
@@ -45,7 +53,7 @@ namespace app::disp {
             m_line_shader.set_uniforms();
             std::vector<size_t> array;
             for (size_t i = 0; i != 121; ++i) {
-                array.push_back(53.0f * (12 + std::sin(0.435 * static_cast<float>(i))));
+                array.push_back(static_cast<size_t>(53.0f * (12.0f + std::sin(0.435 * static_cast<float>(i)))));
             }
             static float theta = 0.0f;
             m_line_renderer.fill_around_ellipse(array, 0.4, 0.8, theta, 0.8, 0.6);
@@ -58,10 +66,6 @@ namespace app::disp {
         }
         PRINT_PROFILE();
         START_PROFILING();
-
-        //        QPainter p(this);
-        //        p.setPen({Qt::red, 5});
-        //        p.drawLine(QPointF{0, 0}, QPointF{220, 220});
     }
 
     void SmokeWidget::timerEvent(QTimerEvent* e) {

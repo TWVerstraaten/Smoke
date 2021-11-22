@@ -6,30 +6,29 @@
 #include "../tools/ThreadSettings.h"
 
 #include <cassert>
-#include <chrono>
 #include <cmath>
 
 namespace app::fl {
 
     // See Jos Stam's paper "Real-Time Fluid Dynamics for Games" for the algorithm below
 
-    static void                set_bounds_to_zero(Matrix& matrix);
-    static void                diffuse_thread(Matrix& current, const Matrix& previous, float ratio, size_t start_j, size_t end_j);
-    static void                diffuse(Matrix& current, const Matrix& previous, float weight);
-    static void                advect_thread(Matrix& current, const Matrix& previous, const Matrix& u, const Matrix& v, float ratio, size_t start_j, size_t end_j);
-    static void                advect(Matrix& current, const Matrix& previous, const Matrix& u, const Matrix& v);
-    static void                project_thread_1(Matrix& v_previous, const Matrix& u_current, const Matrix& v_current, size_t start_j, size_t end_j);
-    static void                project_step_1(Matrix& v_previous, const Matrix& u_current, const Matrix& v_current);
-    static void                project_thread_2(Matrix& u_previous, size_t start_j, size_t end_j);
-    static void                project_step_2(Matrix& u_previous, const Matrix& v_previous);
-    static void                project_thread_3(Matrix& u_current, Matrix& v_current, const Matrix& u_previous, size_t start_j, size_t end_j);
-    static void                project_step_3(Matrix& u_current, Matrix& v_current, const Matrix& u_previous);
-    static void                project(Matrix& u_current, Matrix& v_current, Matrix& u_previous, Matrix& v_previous);
-    static float               clamp_to_grid(float value);
-    static float               sum_neighbors(const Matrix& matrix, size_t i, size_t j);
-    static float               horizontal_difference(const Matrix& matrix, size_t i, size_t j);
-    static float               vertical_difference(const Matrix& source, size_t i, size_t j);
-    static std::pair<int, int> screen_to_array_indices(float x, float y);
+    static void                      set_bounds_to_zero(Matrix& matrix);
+    static void                      diffuse_thread(Matrix& current, const Matrix& previous, float ratio, size_t start_j, size_t end_j);
+    static void                      diffuse(Matrix& current, const Matrix& previous, float weight);
+    static void                      advect_thread(Matrix& current, const Matrix& previous, const Matrix& u, const Matrix& v, float ratio, size_t start_j, size_t end_j);
+    static void                      advect(Matrix& current, const Matrix& previous, const Matrix& u, const Matrix& v);
+    static void                      project_thread_1(Matrix& v_previous, const Matrix& u_current, const Matrix& v_current, size_t start_j, size_t end_j);
+    static void                      project_step_1(Matrix& v_previous, const Matrix& u_current, const Matrix& v_current);
+    static void                      project_thread_2(Matrix& u_previous, size_t start_j, size_t end_j);
+    static void                      project_step_2(Matrix& u_previous, const Matrix& v_previous);
+    static void                      project_thread_3(Matrix& u_current, Matrix& v_current, const Matrix& u_previous, size_t start_j, size_t end_j);
+    static void                      project_step_3(Matrix& u_current, Matrix& v_current, const Matrix& u_previous);
+    static void                      project(Matrix& u_current, Matrix& v_current, Matrix& u_previous, Matrix& v_previous);
+    static float                     clamp_to_grid(float value);
+    static float                     sum_neighbors(const Matrix& matrix, size_t i, size_t j);
+    static float                     horizontal_difference(const Matrix& matrix, size_t i, size_t j);
+    static float                     vertical_difference(const Matrix& source, size_t i, size_t j);
+    static std::pair<size_t, size_t> screen_to_array_indices(float x, float y);
 
     float Fluid::sample_density_at(float x, float y) const {
         return m_density.sample_at(x, y);
@@ -49,7 +48,6 @@ namespace app::fl {
         }
         const auto [i_min, j_min]   = screen_to_array_indices(x - 0.03f, y - 0.03f);
         const auto [i_plus, j_plus] = screen_to_array_indices(x + 0.03f, y + 0.03f);
-        assert(i_min >= 0 && j_min >= 0);
         for (size_t i = i_min; i != i_plus + 1; ++i) {
             for (size_t j = j_min; j != j_plus + 1; ++j) {
                 m_density_previous[i][j] = multiplier * g_particle_input;
@@ -118,8 +116,8 @@ namespace app::fl {
             assert(i_min <= i_max);
             assert(j_min <= j_max);
             const float du = g_force_input * (static_cast<float>(rand()) / (92230.0f * RAND_MAX)) * ((rand() % 10) > 4 ? -1.0f : 1.0f);
-            for (int w = i_min; w <= i_max; ++w) {
-                for (int h = j_min; h <= j_max; ++h) {
+            for (size_t w = i_min; w <= i_max; ++w) {
+                for (size_t h = j_min; h <= j_max; ++h) {
                     m_density_previous[w][h] = 0.01f * g_particle_input;
                     m_v_previous[w][h]       = 0.0001f * g_force_input * r;
                     m_u_previous[w][h]       = du;
@@ -129,10 +127,10 @@ namespace app::fl {
     }
 
     void Fluid::set_circle() {
-        for (int i = 0; i != g_point_count - 1; ++i) {
-            for (int j = 0; j != g_point_count - 1; ++j) {
-                if (std::sqrt(math::square(i - g_cell_count / 2) + math::square(j - g_cell_count / 2)) < g_cell_count / 4 &&
-                    std::sqrt(math::square(i - g_cell_count / 2) + math::square(j - g_cell_count / 2)) > -4 + g_cell_count / 4) {
+        for (size_t i = 0; i != g_point_count - 1; ++i) {
+            for (size_t j = 0; j != g_point_count - 1; ++j) {
+                if (std::sqrt(math::square(i - g_cell_count / 2) + math::square(j - g_cell_count / 2)) < g_cell_count / 4.0f &&
+                    std::sqrt(math::square(i - g_cell_count / 2) + math::square(j - g_cell_count / 2)) > g_cell_count / 4.0f - 4) {
                     m_density[i][j] = 120;
                     m_u[i][j] *= 3;
                     m_v[i][j] *= 3;
@@ -312,9 +310,9 @@ namespace app::fl {
         set_bounds_to_zero(v_current);
     }
 
-    static std::pair<int, int> screen_to_array_indices(float x, float y) {
-        const int i = static_cast<int>(math::clamp(x, 0.0f, 0.999f) * g_point_count);
-        const int j = static_cast<int>(math::clamp(y, 0.0f, 0.999f) * g_point_count);
+    static std::pair<size_t, size_t> screen_to_array_indices(float x, float y) {
+        const auto i = static_cast<size_t>(math::clamp(x, 0.0f, 1.0f) * (g_point_count - 1));
+        const auto j = static_cast<size_t>(math::clamp(y, 0.0f, 1.0f) * (g_point_count - 1));
         return {i, j};
     }
 

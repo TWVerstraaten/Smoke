@@ -4,7 +4,7 @@
 
 #include "LineShader.h"
 
-#include "ShaderSettings.h"
+#include "DisplaySettings.h"
 #include "Shaders/LineFragmentShader.h"
 #include "Shaders/LineVertexShader.h"
 
@@ -25,7 +25,7 @@ namespace app::disp {
         return true;
     }
 
-    void LineShader::update(float dt) {
+    void LineShader::update([[maybe_unused]] float dt) {
         m_zoom *= g_zoom_decay;
         if (m_zoom < 0.0001) {
             m_zoom = 0.0f;

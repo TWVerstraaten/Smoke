@@ -11,7 +11,7 @@ namespace app::math {
 
     template <typename T>
     T clamp(T value, T min, T max) {
-        return value < min ? min : value > max ? max : value;
+        return value <= min ? min : value >= max ? max : value;
     }
 
     std::pair<int, float> mod_one(float x);
