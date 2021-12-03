@@ -35,8 +35,8 @@ namespace app::disp {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         draw_smoke();
         draw_lines();
-        //        PRINT_PROFILE();
-        //        START_PROFILING();
+                PRINT_PROFILE();
+                START_PROFILING();
     }
 
     void SmokeWidget::timerEvent(QTimerEvent* e) {

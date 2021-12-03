@@ -1,6 +1,6 @@
 #include "Fluid.h"
 
-#include "../Math.h"
+#include "../tools/Math.h"
 #include "../tools/Profile.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
@@ -129,8 +129,8 @@ namespace app::fluid {
     void Fluid::set_circle() {
         for (size_t i = 0; i != g_point_count - 1; ++i) {
             for (size_t j = 0; j != g_point_count - 1; ++j) {
-                if (std::sqrt(math::square(i - g_cell_count / 2) + math::square(j - g_cell_count / 2)) < g_cell_count / 4.0f &&
-                    std::sqrt(math::square(i - g_cell_count / 2) + math::square(j - g_cell_count / 2)) > g_cell_count / 4.0f - 4) {
+                if (std::sqrt(tools::math::square(i - g_cell_count / 2) + tools::math::square(j - g_cell_count / 2)) < g_cell_count / 4.0f &&
+                    std::sqrt(tools::math::square(i - g_cell_count / 2) + tools::math::square(j - g_cell_count / 2)) > g_cell_count / 4.0f - 4) {
                     m_density[i][j] = 120;
                     m_u[i][j] *= 3;
                     m_v[i][j] *= 3;
@@ -150,7 +150,7 @@ namespace app::fluid {
     }
 
     static float clamp_to_grid(float value) {
-        return math::clamp(value, 0.5f, static_cast<float>(g_cell_count) - 0.5f);
+        return tools::math::clamp(value, 0.5f, static_cast<float>(g_cell_count) - 0.5f);
     }
 
     static float sum_neighbors(const Matrix& matrix, size_t i, size_t j) {
@@ -311,8 +311,8 @@ namespace app::fluid {
     }
 
     static std::pair<size_t, size_t> screen_to_array_indices(float x, float y) {
-        const auto i = static_cast<size_t>(math::clamp(x, 0.0f, 1.0f) * (g_point_count - 1));
-        const auto j = static_cast<size_t>(math::clamp(y, 0.0f, 1.0f) * (g_point_count - 1));
+        const auto i = static_cast<size_t>(tools::math::clamp(x, 0.0f, 1.0f) * (g_point_count - 1));
+        const auto j = static_cast<size_t>(tools::math::clamp(y, 0.0f, 1.0f) * (g_point_count - 1));
         return {i, j};
     }
 

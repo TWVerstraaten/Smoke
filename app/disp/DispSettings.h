@@ -8,6 +8,7 @@
 #include <cstddef>
 
 namespace app::disp {
+
     enum class PIXEL_MODE { NORMAL, PIXEL };
     enum class COLOR_MODE : int { GRAY = 0, RGB = 1, SPACE = 2 };
 

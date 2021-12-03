@@ -9,7 +9,6 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QSpinBox>
-#include <iostream>
 
 namespace app::disp {
 
@@ -46,7 +45,6 @@ namespace app::disp {
 
     void SettingsWidget::add(const QString& name, float& value, float min, float max, bool as_slider) {
         if (as_slider) {
-            std::cout << min << '\t' << max << "\n";
             auto* slider = new QSlider(Qt::Horizontal, this);
             slider->setMinimum(0);
             slider->setMaximum(100);

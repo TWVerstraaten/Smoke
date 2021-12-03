@@ -7,8 +7,6 @@
 
 #include "ShaderBase.h"
 
-#include <QOpenGLShaderProgram>
-
 namespace app::disp {
 
     class LineShader : public ShaderBase {

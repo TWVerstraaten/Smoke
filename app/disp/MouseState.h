@@ -6,7 +6,6 @@
 #define H_APP_DISP_MOUSESTATE_H
 
 #include <QVector2D>
-#include <qnamespace.h>
 
 namespace app::disp {
 

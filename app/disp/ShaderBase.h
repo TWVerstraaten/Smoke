@@ -26,7 +26,7 @@ namespace app::disp {
         static void update_statics(float dt);
 
       protected:
-        bool init(const char* vertex_shader, const char* fragment_shader);
+        [[nodiscard]] bool init(const char* vertex_shader, const char* fragment_shader);
 
         QOpenGLShaderProgram m_program;
         inline static float  s_zoom = 0.0f;

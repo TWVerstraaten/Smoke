@@ -18,7 +18,7 @@ namespace app::disp {
       public:
         void                 unbind();
         void                 bind();
-        bool                 init();
+        [[nodiscard]] bool   init();
         [[nodiscard]] size_t index_count() const;
 
       protected:

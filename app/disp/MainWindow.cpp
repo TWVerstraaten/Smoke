@@ -5,7 +5,7 @@
 #include "MainWindow.h"
 
 #include "../State.h"
-#include "../fluid/FlSettings.h"
+#include "../fluid/FluidSettings.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
 #include "DispSettings.h"
@@ -43,9 +43,9 @@ namespace app::disp {
 
         m_settings_widget->add_section("Shots");
         m_settings_widget->add("Circle", [this]() { m_smoke_widget->set_circle(); });
-        m_settings_widget->add("Zoom", [this]() { m_smoke_widget->zoom(); });
+        m_settings_widget->add("Zoom", [this]() { app::disp::SmokeWidget::zoom(); });
         m_settings_widget->add("Boom", [this]() {
-            m_smoke_widget->zoom();
+            app::disp::SmokeWidget::zoom();
             m_smoke_widget->set_circle();
         });
 

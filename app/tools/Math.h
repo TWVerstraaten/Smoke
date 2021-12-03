@@ -5,9 +5,11 @@
 #ifndef H_APP_MATH_H
 #define H_APP_MATH_H
 
+#include "Point2F.h"
+
 #include <utility>
 
-namespace app::math {
+namespace app::tools::math {
 
     template <typename T>
     T clamp(T value, T min, T max) {
@@ -19,9 +21,9 @@ namespace app::math {
         return a * a;
     }
 
-    std::pair<int, float>   mod_one(float x);
-    std::pair<float, float> rotate(float x, float y, float theta);
+    std::pair<int, float> mod_one(float x);
+    Point2F               rotate(const Point2F& point, float theta);
 
-} // namespace app::math
+} // namespace app::tools::math
 
 #endif // H_APP_MATH_H

@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-namespace app::math {
+namespace app::tools::math {
 
     std::pair<int, float> mod_one(const float x) {
         float i;
@@ -14,10 +14,10 @@ namespace app::math {
         return {std::round(i), f};
     }
 
-    std::pair<float, float> rotate(float x, float y, float theta) {
+    Point2F rotate(const Point2F& point, float theta) {
         float c = std::cos(theta);
         float s = std::sin(theta);
-        return {c * x - s * y, s * x + c * y};
+        return {c * point.x - s * point.y, s * point.x + c * point.y};
     }
 
-} // namespace app::math
+} // namespace app::tools::math

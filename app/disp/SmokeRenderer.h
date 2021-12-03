@@ -24,6 +24,8 @@ namespace app::disp {
       private:
         void fill_quads_normal(const app::fluid::Fluid& fluid);
         void fill_quads_pixel(const app::fluid::Fluid& fluid);
+        void fill_quad_pixel_thread(size_t start, size_t end, const fluid::Fluid& fluid);
+        void fill_quad_normal_thread(size_t start, size_t end, const fluid::Fluid& fluid);
 
         size_t m_vertical_sample_points   = 0;
         size_t m_horizontal_sample_points = 0;

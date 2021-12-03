@@ -5,7 +5,7 @@
 #ifndef H_APP_FLUID_MATRIX_H
 #define H_APP_FLUID_MATRIX_H
 
-#include "FlSettings.h"
+#include "FluidSettings.h"
 
 #include <array>
 #include <cassert>

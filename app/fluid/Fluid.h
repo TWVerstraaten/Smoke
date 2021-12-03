@@ -1,7 +1,7 @@
 #ifndef H_APP_FLUID_FLUID_H
 #define H_APP_FLUID_FLUID_H
 
-#include "FlSettings.h"
+#include "FluidSettings.h"
 #include "Matrix.h"
 
 namespace app::fluid {

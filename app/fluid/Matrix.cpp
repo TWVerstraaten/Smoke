@@ -4,7 +4,7 @@
 
 #include "Matrix.h"
 
-#include "../Math.h"
+#include "../tools/Math.h"
 
 #include <cassert>
 
@@ -28,8 +28,8 @@ namespace app::fluid {
         assert(x >= 0.0f);
         assert(y <= 1.0f);
         assert(y >= 0.0f);
-        const auto [i, f_i] = app::math::mod_one(x * (g_point_count - 1));
-        const auto [j, f_j] = app::math::mod_one(y * (g_point_count - 1));
+        const auto [i, f_i] = app::tools::math::mod_one(x * (g_point_count - 1));
+        const auto [j, f_j] = app::tools::math::mod_one(y * (g_point_count - 1));
         // Bilinear interpolation
         return (*this)[i][j] * (1.0f - f_i) * (1.0f - f_j) + (*this)[i + 1][j] * f_i * (1.0f - f_j) + (*this)[i + 1][j + 1] * f_i * f_j + (*this)[i][j + 1] * (1.0f - f_i) * f_j;
     }
