@@ -4,8 +4,8 @@
 
 #include "SmokeWidget.h"
 
+#include "../../fluid/Fluid.h"
 #include "../State.h"
-#include "../fluid/Fluid.h"
 #include "../tools/Profile.h"
 #include "DispSettings.h"
 
@@ -32,24 +32,25 @@ namespace app::disp {
     }
 
     void SmokeWidget::paintGL() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        draw_smoke();
-        draw_lines();
-                PRINT_PROFILE();
-                START_PROFILING();
+        {
+            PROFILE_NAMED("PaintGl");
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            draw_smoke();
+            draw_lines();
+        }
+        PRINT_PROFILE();
+        START_PROFILING();
     }
 
     void SmokeWidget::timerEvent(QTimerEvent* e) {
+        PROFILE_FUNCTION();
         Q_UNUSED(e)
         const auto elapsed = static_cast<float>(m_elapsed_timer.elapsed()) / 1000.0f;
         m_elapsed_timer.restart();
         if (not State::get().paused()) {
             ShaderBase::update_statics(elapsed);
-            {
-                PROFILE_NAMED("step");
-                m_fluid->step();
-                m_fluid->clear_previous();
-            }
+            m_fluid->step();
+            m_fluid->clear_previous();
         }
         update();
     }

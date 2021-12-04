@@ -4,7 +4,7 @@
 
 #include "SmokeRenderer.h"
 
-#include "../fluid/Fluid.h"
+#include "../../fluid/Fluid.h"
 #include "../tools/Profile.h"
 #include "../tools/ThreadPool.h"
 #include "../tools/ThreadSettings.h"
