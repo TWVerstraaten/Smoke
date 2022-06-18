@@ -7,7 +7,7 @@
 #include <iostream>
 #include <utility>
 
-namespace app::tools {
+namespace app::prf {
 
     ScopedTimer::ScopedTimer(std::string name, std::string delimiter, bool print_on_destruct)
         : m_name(std::move(name)), m_start(std::chrono::high_resolution_clock::now()), m_delimiter(std::move(delimiter)), m_print_on_destruct(print_on_destruct) {
@@ -29,4 +29,4 @@ namespace app::tools {
         return m_name;
     }
 
-} // namespace app::tools
+} // namespace app::prf

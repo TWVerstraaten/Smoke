@@ -32,17 +32,15 @@ namespace app::disp {
         }
     }
 
-    bool MouseState::left_or_right_pressed() const {
+    bool MouseState::any_pressed() const {
         return m_left_pressed | m_right_pressed;
     }
 
-    QVector2D MouseState::set_mouse_position(QVector2D mouse_new_position) {
-        const auto direction = mouse_new_position - m_mouse_position;
-        m_mouse_position     = mouse_new_position;
-        return direction;
+    void MouseState::set_mouse_position(const QPointF& mouse_new_position) {
+        m_mouse_position = mouse_new_position;
     }
 
-    const QVector2D& MouseState::mouse_position() const {
+    const QPointF& MouseState::mouse_position() const {
         return m_mouse_position;
     }
 

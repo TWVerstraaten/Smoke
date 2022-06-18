@@ -6,8 +6,8 @@
 
 #include "../../fluid/FluidSettings.h"
 #include "../State.h"
-#include "../tools/ThreadPool.h"
-#include "../tools/ThreadSettings.h"
+#include "../thr/ThreadPool.h"
+#include "../thr/ThreadSettings.h"
 #include "DispSettings.h"
 #include "SettingsWidget.h"
 #include "SmokeWidget.h"
@@ -20,24 +20,24 @@ namespace app::disp {
         setCentralWidget(m_smoke_widget);
 
         m_settings_widget->add_section("Simulation");
-        m_settings_widget->add("Force", app::fluid::g_force_input, 0.1 * app::fluid::g_force_input, 10 * app::fluid::g_force_input, true);
-        m_settings_widget->add("Particles", app::fluid::g_particle_input, 0.1 * app::fluid::g_particle_input, 10 * app::fluid::g_particle_input, true);
-        m_settings_widget->add("Visc", app::fluid::g_viscosity_coefficient, 0.01 * app::fluid::g_viscosity_coefficient, 100 * app::fluid::g_viscosity_coefficient, true);
-        m_settings_widget->add("Diff", app::fluid::g_diffusion_coefficient, 0.01 * app::fluid::g_diffusion_coefficient, 100 * app::fluid::g_diffusion_coefficient, true);
-        m_settings_widget->add("Time step", app::fluid::g_dt, 0.001, 2.0);
+        m_settings_widget->add("Force", app::fluid::g_force_input, 0.1 * app::fluid::g_force_input, 10 * app::fluid::g_force_input, false);
+        m_settings_widget->add("Particles", app::fluid::g_particle_input, 0.1 * app::fluid::g_particle_input, 10 * app::fluid::g_particle_input, false);
+        m_settings_widget->add("Visc", app::fluid::g_viscosity_coefficient, 0.01 * app::fluid::g_viscosity_coefficient, 100 * app::fluid::g_viscosity_coefficient, false);
+        m_settings_widget->add("Diff", app::fluid::g_diffusion_coefficient, 0.01 * app::fluid::g_diffusion_coefficient, 100 * app::fluid::g_diffusion_coefficient, false);
+        m_settings_widget->add("Time step", app::fluid::g_dt, 0.001, 0.025, true);
 
         //        m_settings_widget->add("Zoom Depth", g_zoom_depth);
         //        m_settings_widget->add("Zoom Decay", g_zoom_decay);
         m_settings_widget->add_section("Performance");
-        m_settings_widget->add("Multi thread", tools::g_multi_thread);
-        m_settings_widget->add("Thread count", tools::g_thread_count, 1, 32, [](size_t v) { tools::ThreadPool::get().resize(v); });
+        m_settings_widget->add("Multi thread", thr::g_multi_thread);
+        m_settings_widget->add("Thread count", thr::g_thread_count, 1, 32, [](size_t v) { thr::ThreadPool::get().resize(v); });
 
         m_settings_widget->add_section("Display");
-        m_settings_widget->add("Power scale", g_power_scale, 0.1f, 1.0f, true);
+        m_settings_widget->add("Power scale", g_power_scale, 0.1f, 2.0f, false);
         m_settings_widget->add("Clamp counts", g_clamp_count, 2);
         m_settings_widget->add("Clamp coef", g_clamp_coefficient, 0.0, 1.0, true);
         m_settings_widget->add("Invert colors", g_invert_colors);
-        m_settings_widget->add("Color mode", g_color_mode, {{"gray", COLOR_MODE::GRAY}, {"rgb", COLOR_MODE::RGB}, {"space", COLOR_MODE::SPACE}});
+        m_settings_widget->add("Color mode", g_color_mode, {{"gray", COLOR_MODE::GRAY}, {"hsl", COLOR_MODE::HSL}, {"hsv", COLOR_MODE::HSV}, {"water", COLOR_MODE::WATER}});
         m_settings_widget->add("Draw mode", g_pixel_mode, {{"normal", PIXEL_MODE::NORMAL}, {"pixel", PIXEL_MODE::PIXEL}});
         m_settings_widget->add("Pixel size", g_pixel_size, 1);
 

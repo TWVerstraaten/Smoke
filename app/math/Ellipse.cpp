@@ -4,7 +4,7 @@
 
 #include "Ellipse.h"
 
-namespace app::tools {
+namespace app::math {
 
     Ellipse::EllipseBuilder::EllipseBuilder() : m_ellipse(new Ellipse) {
     }
@@ -13,11 +13,11 @@ namespace app::tools {
         return *m_ellipse;
     }
 
-    Ellipse::EllipseBuilder& Ellipse::EllipseBuilder::set_axes(Point2F& axes) {
+    Ellipse::EllipseBuilder& Ellipse::EllipseBuilder::set_axes(QPointF& axes) {
         m_ellipse->m_axes = axes;
         return *this;
     }
-    Ellipse::EllipseBuilder& Ellipse::EllipseBuilder::set_center(Point2F& center) {
+    Ellipse::EllipseBuilder& Ellipse::EllipseBuilder::set_center(QPointF& center) {
         m_ellipse->m_center = center;
         return *this;
     }
@@ -33,4 +33,7 @@ namespace app::tools {
         return *this;
     }
 
-} // namespace app::tools
+    Ellipse::EllipseBuilder Ellipse::build() {
+        return {};
+    }
+} // namespace app::math

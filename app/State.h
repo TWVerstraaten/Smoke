@@ -12,10 +12,11 @@ namespace app {
     class State {
 
       public:
-        void                        set_paused(bool is_paused);
         void                        toggle_paused();
         [[nodiscard]] bool          paused() const;
         [[nodiscard]] static State& get();
+
+        State(const State&) = delete;
 
       private:
         State() = default;

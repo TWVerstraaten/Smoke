@@ -7,13 +7,27 @@
 
 #include "ShaderBase.h"
 
+namespace app::fluid {
+    class Fluid;
+}
+
 namespace app::disp {
 
     class SmokeShader : public ShaderBase {
 
       public:
+        void set_extreme_values(const app::fluid::Fluid& fluid);
+
         bool init() override;
         void set_uniforms() override;
+
+      private:
+        float m_max_density;
+        float m_min_density;
+        float m_max_v;
+        float m_min_v;
+        float m_max_u;
+        float m_min_u;
     };
 
 } // namespace app::disp

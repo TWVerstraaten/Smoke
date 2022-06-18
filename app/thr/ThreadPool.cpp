@@ -8,7 +8,7 @@
 
 #include <algorithm>
 
-namespace app::tools {
+namespace app::thr {
 
     std::unique_ptr<ThreadPool> ThreadPool::s_thread_pool;
 
@@ -86,4 +86,4 @@ namespace app::tools {
         return *s_thread_pool;
     }
 
-} // namespace app::tools
+} // namespace app::thr

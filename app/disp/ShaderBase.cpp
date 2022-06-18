@@ -37,26 +37,21 @@ namespace app::disp {
     }
 
     bool ShaderBase::init(const char* vertex_shader, const char* fragment_shader) {
-        if (!m_program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader)) {
+        if (!m_program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader))
             return false;
-        }
-        if (!m_program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader)) {
+        if (!m_program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader))
             return false;
-        }
-        if (!m_program.link()) {
+        if (!m_program.link())
             return false;
-        }
-        if (!m_program.bind()) {
+        if (!m_program.bind())
             return false;
-        }
         return true;
     }
 
     void ShaderBase::update_statics(float dt) {
         s_time += dt;
         s_zoom *= g_zoom_decay;
-        if (s_zoom < 0.001) {
+        if (s_zoom < 0.001)
             s_zoom = 0.0f;
-        }
     }
 } // namespace app::disp

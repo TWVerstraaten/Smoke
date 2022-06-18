@@ -2,8 +2,8 @@
 // Created by pc on 17-11-21.
 //
 
-#ifndef H_APP_TOOLS_THREADPOOL_H
-#define H_APP_TOOLS_THREADPOOL_H
+#ifndef H_APP_THR_THREADPOOL_H
+#define H_APP_THR_THREADPOOL_H
 
 #include <atomic>
 #include <condition_variable>
@@ -14,7 +14,7 @@
 #include <thread>
 #include <vector>
 
-namespace app::tools {
+namespace app::thr {
 
     class ThreadPool {
         friend void run(ThreadPool& pool, std::atomic<bool>& ready_status);
@@ -42,6 +42,6 @@ namespace app::tools {
         std::queue<std::function<void()>>  m_function_queue;
         static std::unique_ptr<ThreadPool> s_thread_pool;
     };
-} // namespace app::tools
+} // namespace app::thr
 
-#endif // H_APP_TOOLS_THREADPOOL_H
+#endif // H_APP_THR_THREADPOOL_H

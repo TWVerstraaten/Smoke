@@ -6,7 +6,7 @@
 
 #include "../../fluid/Fluid.h"
 #include "../State.h"
-#include "../tools/Profile.h"
+#include "../prf/Profile.h"
 #include "DispSettings.h"
 
 #include <QMouseEvent>
@@ -32,12 +32,9 @@ namespace app::disp {
     }
 
     void SmokeWidget::paintGL() {
-        {
-            PROFILE_NAMED("PaintGl");
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            draw_smoke();
-            draw_lines();
-        }
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        draw_smoke();
+        draw_lines();
         PRINT_PROFILE();
         START_PROFILING();
     }
@@ -56,27 +53,29 @@ namespace app::disp {
     }
 
     void SmokeWidget::mouseMoveEvent(QMouseEvent* e) {
-        if (not m_mouse_state.left_or_right_pressed()) {
+        if (not m_mouse_state.any_pressed())
             return;
-        }
-        QVector2D   direction = m_mouse_state.set_mouse_position(QVector2D(e->localPos()));
-        const float width     = static_cast<float>(size().width());
-        const float height    = static_cast<float>(size().height());
-        direction[0] /= width;
-        direction[1] /= height;
-        const auto new_mouse_position = m_mouse_state.mouse_position();
 
-        if (m_mouse_state.left_pressed()) {
+        const float width              = static_cast<float>(size().width());
+        const float height             = static_cast<float>(size().height());
+        const auto  new_mouse_position = QPointF(e->localPos());
+
+        auto direction = new_mouse_position - m_mouse_state.mouse_position();
+        direction.setX(direction.x() / width);
+        direction.setY(direction.y() / height);
+
+        if (m_mouse_state.left_pressed())
             m_fluid->add_density(new_mouse_position.x() / width, 1.0f - new_mouse_position.y() / height);
-        } else if (m_mouse_state.right_pressed()) {
+        else if (m_mouse_state.right_pressed())
             m_fluid->add_density(new_mouse_position.x() / width, 1.0f - new_mouse_position.y() / height, -1.0f);
-        }
+
         m_fluid->add_velocity(new_mouse_position.x() / width, 1.0f - new_mouse_position.y() / height, direction.x(), -direction.y());
+        m_mouse_state.set_mouse_position(new_mouse_position);
     }
 
     void SmokeWidget::mousePressEvent(QMouseEvent* e) {
         m_mouse_state.press(e->button());
-        m_mouse_state.set_mouse_position(QVector2D(e->localPos()));
+        m_mouse_state.set_mouse_position(QPointF(e->localPos()));
     }
 
     void SmokeWidget::mouseReleaseEvent(QMouseEvent* e) {
@@ -112,10 +111,10 @@ namespace app::disp {
 
     void SmokeWidget::draw_lines() {
         std::vector<size_t> array;
-        for (size_t i = 0; i != 121; ++i) {
-            array.push_back(static_cast<size_t>(53.0f * (12.0f + std::sin(0.435 * static_cast<float>(i)))));
-        }
-        static float theta = 0.0f;
+        static float        theta = 0.0f;
+        for (size_t i = 0; i != 121; ++i)
+            array.push_back(static_cast<size_t>(53.0f * (12.0f + std::sin(0.435 * static_cast<float>(15 + i)))));
+
         m_line_renderer.fill_around_ellipse(array, 0.4, 0.8, theta, 0.8, 0.6);
         m_line_renderer.bind();
         theta += 0.02;

@@ -1,9 +1,9 @@
 
 #include "LineRenderer.h"
 
-#include "../tools/Math.h"
-#include "../tools/ThreadPool.h"
-#include "../tools/ThreadSettings.h"
+#include "../math/Math.h"
+#include "../thr/ThreadPool.h"
+#include "../thr/ThreadSettings.h"
 #include "LineShader.h"
 
 #include <cmath>
@@ -36,9 +36,10 @@ namespace app::disp {
         size_t       n   = buffer.size();
         const size_t max = *std::max_element(buffer.begin(), buffer.end());
         for (size_t i = 0; i != n; ++i) {
-            const auto p = app::tools::math::rotate({0.5f * buffer[i] * a * std::sin((2 * M_PI * i) / n) / max, 0.5f * buffer[i] * b * std::cos((2 * M_PI * i) / n) / max}, -theta);
-            m_quad_vertices.push_back(p.x + dx);
-            m_quad_vertices.push_back(p.y + dy);
+            auto p = QPointF(0.5f * buffer[i] * a * std::sin((2 * M_PI * i) / n) / max, 0.5f * buffer[i] * b * std::cos((2 * M_PI * i) / n) / max);
+            app::math::rotateAboutZero(p, theta);
+            m_quad_vertices.push_back(p.x() + dx);
+            m_quad_vertices.push_back(p.y() + dy);
             m_quad_vertices.push_back(1);
             m_quad_vertices.push_back(1);
             m_quad_vertices.push_back(0);

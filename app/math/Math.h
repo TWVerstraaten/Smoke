@@ -2,14 +2,15 @@
 // Created by pc on 03-11-21.
 //
 
-#ifndef H_APP_MATH_H
-#define H_APP_MATH_H
+#ifndef H_APP_MATH_MATH_H
+#define H_APP_MATH_MATH_H
 
-#include "Point2F.h"
+#include "IntFrac.h"
 
+#include <QPointF>
 #include <utility>
 
-namespace app::tools::math {
+namespace app::math {
 
     template <typename T>
     T clamp(T value, T min, T max) {
@@ -21,9 +22,8 @@ namespace app::tools::math {
         return a * a;
     }
 
-    std::pair<int, float> mod_one(float x);
-    Point2F               rotate(const Point2F& point, float theta);
+    void rotateAboutZero(QPointF& point, float theta);
 
-} // namespace app::tools::math
+} // namespace app::math
 
-#endif // H_APP_MATH_H
+#endif // H_APP_MATH_MATH_H

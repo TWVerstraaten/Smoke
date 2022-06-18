@@ -7,7 +7,7 @@
 namespace app::disp {
 
     PIXEL_MODE g_pixel_mode        = PIXEL_MODE::PIXEL;
-    COLOR_MODE g_color_mode        = COLOR_MODE::RGB;
+    COLOR_MODE g_color_mode        = COLOR_MODE::HSL;
     bool       g_invert_colors     = false;
     float      g_zoom_depth        = 0.1;
     float      g_zoom_decay        = 0.86;

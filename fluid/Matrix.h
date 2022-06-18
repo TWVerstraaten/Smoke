@@ -10,34 +10,35 @@
 #include <array>
 #include <cassert>
 
-namespace app {
-    namespace fluid {
+namespace app::fluid {
 
-        class Matrix {
+    class Matrix {
 
-          public:
-            template <class T>
-            struct Row {
-                T& operator[](size_t index) const {
-                    assert(index < g_point_count);
-                    return *(m_p + index);
-                }
-                T* m_p;
-            };
-            [[nodiscard]] Row<float>       operator[](size_t row);
-            [[nodiscard]] Row<const float> operator[](size_t row) const;
-            [[nodiscard]] const float*     data() const;
-            [[nodiscard]] float*           data();
-
-            void                set_zero();
-            void                add_scaled(const Matrix& rhs, float weight);
-            Matrix&             operator+=(const Matrix& rhs);
-            [[nodiscard]] float sample_at(float x, float y) const;
-
-          private:
-            std::array<float, g_point_count * g_point_count> m_array;
+      public:
+        template <class T>
+        struct Row {
+            T& operator[](size_t index) const {
+                assert(index < g_point_count);
+                return *(m_p + index);
+            }
+            T* m_p;
         };
-    } // namespace fluid
-} // namespace app
+        [[nodiscard]] Row<float>       operator[](size_t row);
+        [[nodiscard]] Row<const float> operator[](size_t row) const;
+        [[nodiscard]] const float*     data() const;
+        [[nodiscard]] float*           data();
+
+        void                set_zero();
+        void                add_scaled(const Matrix& rhs, float weight);
+        Matrix&             operator+=(const Matrix& rhs);
+        [[nodiscard]] float sample_at(float x, float y) const;
+        [[nodiscard]] float max() const;
+        [[nodiscard]] float min() const;
+        [[nodiscard]] float average() const;
+
+      private:
+        std::array<float, g_point_count * g_point_count> m_array;
+    };
+} // namespace app::fluid
 
 #endif // H_FLUID_MATRIX_H
