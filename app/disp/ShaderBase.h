@@ -22,7 +22,7 @@ namespace app::disp {
         virtual void                  set_uniforms();
         [[maybe_unused]] virtual void update(float dt);
 
-        static void zoom();
+        static void zoom(float zoom_depth);
         static void update_statics(float dt);
 
       protected:

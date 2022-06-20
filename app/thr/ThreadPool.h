@@ -32,14 +32,15 @@ namespace app::thr {
         [[nodiscard]] static ThreadPool& get();
 
       private:
-        std::atomic<bool>                  m_stop{false};
-        mutable std::mutex                 m_queue_mutex;
-        mutable std::mutex                 m_task_done_mutex;
-        std::condition_variable            m_task_condition_variable;
-        std::condition_variable            m_task_done_condition_variable;
-        std::vector<std::thread>           m_threads;
-        std::deque<std::atomic<bool>>      m_ready_statuses;
-        std::queue<std::function<void()>>  m_function_queue;
+        std::atomic<bool>                 m_stop{false};
+        mutable std::mutex                m_queue_mutex;
+        mutable std::mutex                m_task_done_mutex;
+        std::condition_variable           m_task_condition_variable;
+        std::condition_variable           m_task_done_condition_variable;
+        std::vector<std::thread>          m_threads;
+        std::deque<std::atomic<bool>>     m_ready_statuses;
+        std::queue<std::function<void()>> m_function_queue;
+
         static std::unique_ptr<ThreadPool> s_thread_pool;
     };
 } // namespace app::thr

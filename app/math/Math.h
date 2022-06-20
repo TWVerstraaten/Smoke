@@ -6,9 +6,7 @@
 #define H_APP_MATH_MATH_H
 
 #include "IntFrac.h"
-
-#include <QPointF>
-#include <utility>
+#include "Vector2F.h"
 
 namespace app::math {
 
@@ -22,7 +20,9 @@ namespace app::math {
         return a * a;
     }
 
-    void rotateAboutZero(QPointF& point, float theta);
+    void     rotateAboutZero(Vector2F& point, float theta);
+    Vector2F random_point_zero_one();
+    Vector2F random_point_centered();
 
 } // namespace app::math
 

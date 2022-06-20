@@ -18,7 +18,7 @@ namespace app {
         m_paused = !m_paused;
     }
 
-    bool State::paused() const {
+    bool State::is_paused() const {
         return m_paused;
     }
 } // namespace app

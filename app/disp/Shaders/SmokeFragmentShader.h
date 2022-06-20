@@ -9,30 +9,15 @@ namespace app::disp {
 
     static const GLchar* g_smoke_fragment_shader = R"glsl(
     #version 430 core
-    in vec3 Color;
+    in vec3 out_color;
 
     out vec4 outColor;
 
     uniform float time = 1;
 
-//    bool on(vec2 coords){
-//        if (length(vec2(mod(coords.x, 20), mod(coords.y, 20))) < (14 + 5 * sin(10 * time))){
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-
     void main()
     {
-        outColor = vec4(Color, 1.0f);
-
-//        if (on(gl_FragCoord.xy)) {
-//            outColor = vec4(1.0 - Color.r, 1.0 - Color.g, 1.0 - Color.b, 1.0f);
-//        } else {
-//            outColor = vec4(Color, 1.0f);
-//        }
-
+        outColor = vec4(out_color, 1.0f);
     }
 )glsl";
 

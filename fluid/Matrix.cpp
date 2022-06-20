@@ -14,8 +14,8 @@
 namespace app::fluid {
 
     static app::math::IntFrac mod_one(float x) {
-        float       i;
-        const float f = std::modf(x, &i);
+        float i;
+        float f = std::modf(x, &i);
         return {static_cast<int>(std::round(i)), f};
     }
 
@@ -53,9 +53,9 @@ namespace app::fluid {
         assert(m_array.size() == rhs.m_array.size());
         const auto& rhs_array = rhs.m_array;
         auto        rhs_it    = rhs_array.cbegin();
-        for (auto it = m_array.begin(); it != m_array.end(); ++it, ++rhs_it) {
+        for (auto it = m_array.begin(); it != m_array.end(); ++it, ++rhs_it)
             *it += *rhs_it;
-        }
+
         return *this;
     }
 
@@ -63,9 +63,8 @@ namespace app::fluid {
         assert(m_array.size() == rhs.m_array.size());
         const auto& rhs_array = rhs.m_array;
         auto        rhs_it    = rhs_array.cbegin();
-        for (auto it = m_array.begin(); it != m_array.end(); ++it, ++rhs_it) {
+        for (auto it = m_array.begin(); it != m_array.end(); ++it, ++rhs_it)
             *it += weight * (*rhs_it);
-        }
     }
 
     const float* Matrix::data() const {
@@ -85,7 +84,7 @@ namespace app::fluid {
     }
 
     float Matrix::average() const {
-        float sum = std::accumulate(m_array.begin(),m_array.end(), 0);
-        return sum / m_array.size();
+        float sum = std::accumulate(m_array.begin(), m_array.end(), 0.f);
+        return sum / static_cast<float>(m_array.size());
     }
 } // namespace app::fluid

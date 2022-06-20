@@ -58,9 +58,9 @@ namespace app::thr {
             {
                 std::unique_lock<std::mutex> lock(pool.m_queue_mutex);
                 pool.m_task_condition_variable.wait(lock, [&] { return (not pool.m_function_queue.empty()) || pool.m_stop; });
-                if (pool.m_stop) { // Stop even if there are tasks left.
+                if (pool.m_stop) // Stop even if there are tasks left.
                     break;
-                } else {
+                else {
                     ready_status = false;
                     f            = pool.m_function_queue.front();
                     pool.m_function_queue.pop();
@@ -80,9 +80,9 @@ namespace app::thr {
     }
 
     ThreadPool& ThreadPool::get() {
-        if (not s_thread_pool) {
+        if (not s_thread_pool)
             s_thread_pool = std::make_unique<ThreadPool>(g_thread_count);
-        }
+
         return *s_thread_pool;
     }
 

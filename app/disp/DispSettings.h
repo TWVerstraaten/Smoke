@@ -9,10 +9,8 @@
 
 namespace app::disp {
 
-    enum class PIXEL_MODE { NORMAL, PIXEL };
-    enum class COLOR_MODE : int { GRAY = 0, HSL = 1, HSV = 2, WATER = 3 };
+    enum class COLOR_MODE : int { GRAY = 0, HSL = 1, HSV = 2, WATER = 3, TEST_1 = 4, TEST_2 = 5 };
 
-    extern PIXEL_MODE g_pixel_mode;
     extern COLOR_MODE g_color_mode;
     extern bool       g_invert_colors;
     extern float      g_zoom_depth;

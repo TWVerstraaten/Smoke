@@ -24,8 +24,8 @@ namespace app::disp {
         m_program.setAttributeBuffer(color_location, GL_FLOAT, 2 * sizeof(float), 3, 5 * sizeof(float));
     }
 
-    void ShaderBase::zoom() {
-        s_zoom = g_zoom_depth;
+    void ShaderBase::zoom(float zoom_depth) {
+        s_zoom = zoom_depth;
     }
 
     void ShaderBase::bind() {

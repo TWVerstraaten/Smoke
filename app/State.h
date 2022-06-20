@@ -13,7 +13,7 @@ namespace app {
 
       public:
         void                        toggle_paused();
-        [[nodiscard]] bool          paused() const;
+        [[nodiscard]] bool          is_paused() const;
         [[nodiscard]] static State& get();
 
         State(const State&) = delete;
