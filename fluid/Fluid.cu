@@ -64,7 +64,7 @@ namespace app::fluid {
         cudaFree(m_v_previous_cuda);
     }
 
-    void Fluid::add_density(float x, float y, float multiplier) {
+    void Fluid::add_density(double x, double y, double multiplier) {
         if (x <= 0 || x >= 1 || y <= 0 || y >= 1)
             return;
         const auto grid_position = screen_to_array_indices(x, y);
@@ -72,7 +72,7 @@ namespace app::fluid {
         cudaDeviceSynchronize();
     }
 
-    void Fluid::add_velocity(float x, float y, float dx, float dy) {
+    void Fluid::add_velocity(double x, double y, double dx, double dy) {
         if (x <= 0 || x >= 1 || y <= 0 || y >= 1)
             return;
         const auto grid_position = screen_to_array_indices(x, y);
@@ -156,13 +156,13 @@ namespace app::fluid {
         set_circle_kernel<<<g_blocks, g_threads>>>(m_density_cuda, m_u_cuda, m_v_cuda);
     }
 
-    void Fluid::set_polygon(size_t n, float intensity) {
+    void Fluid::set_polygon(size_t n, double intensity, math::Point direction_offset) {
         assert(n >= 3);
         assert(intensity >= 0 && intensity <= 1);
         std::vector<math::Point> points;
         for (size_t i = 0; i != n + 1; ++i) {
             float theta = i * 2.0 * M_PI / static_cast<float>(n);
-            points.push_back(math::Point{0.5, 0.5} + 0.3 * math::Point{std::sin(theta), std::cos(theta)});
+            points.push_back(math::Point{0.5, 0.5} + 0.4 * intensity * math::Point{std::sin(theta), std::cos(theta)});
         }
 
         for (size_t i = 0; i != n; ++i) {
@@ -171,8 +171,8 @@ namespace app::fluid {
             const auto  lerp_points = 40;
             for (size_t j = 0; j != lerp_points + 1; ++j) {
                 const auto point = (j * point_1 + (lerp_points - j) * point_2) * (1.0 / static_cast<float>(lerp_points));
-                add_density(point);
-                add_velocity(point, intensity * intensity * intensity * math::random_point_centered());
+                add_density(point, intensity);
+                add_velocity(point, 0.6 * intensity * intensity * intensity * (math::random_point_centered() + direction_offset));
             }
         }
     }
@@ -195,6 +195,10 @@ namespace app::fluid {
 
     void Fluid::add_velocity(const math::Point& point, const math::Direction& direction) {
         add_velocity(point.x, point.y, direction.x, direction.y);
+    }
+
+    void Fluid::scale_density(float multiplier) {
+        m_density *= multiplier;
     }
 
     /******************** Static function implementations ************************/

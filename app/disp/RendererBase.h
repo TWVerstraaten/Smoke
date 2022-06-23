@@ -30,6 +30,7 @@ namespace app::disp {
         std::unique_ptr<ShaderBase> m_shader{};
 
       private:
+        bool          m_is_initialized = false;
         QOpenGLBuffer m_quad_index_buffer;
         QOpenGLBuffer m_quad_array_buffer{};
     };

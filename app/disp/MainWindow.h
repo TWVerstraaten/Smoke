@@ -11,19 +11,26 @@
 #include <QElapsedTimer>
 #include <QMainWindow>
 
+namespace app::audio {
+    class AudioPlayer;
+    class SoundWindow;
+} // namespace app::audio
+
 namespace app::disp {
 
     class SettingsWidget;
     class SmokeWidget;
     class AudioWidget;
 
-    class MainWindow : public QMainWindow {
+    class MainWindow final : public QMainWindow {
         Q_OBJECT
 
         friend class AudioWidget;
+        friend class SmokeWidget;
 
       public:
         MainWindow();
+        ~MainWindow() final;
 
         void keyPressEvent(QKeyEvent* e) override;
 
@@ -32,16 +39,18 @@ namespace app::disp {
         void timerEvent(QTimerEvent* e) override;
 
       private:
+        // These will be owned by Qt frame work
         SmokeWidget*    m_smoke_widget;
         SettingsWidget* m_settings_widget;
 
-        audio::SoundWindow m_sound_window;
-        audio::AudioPlayer m_player;
-
-        std::unique_ptr<AudioWidget> m_audio_widget;
+        // The following need to be in this order because m_audio_widget relies on m_sound_window and m_player
+        std::unique_ptr<audio::SoundWindow> m_sound_window;
+        std::unique_ptr<audio::AudioPlayer> m_player;
+        std::unique_ptr<AudioWidget>        m_audio_widget;
 
         QBasicTimer   m_timer;
         QElapsedTimer m_elapsed_timer;
+        QElapsedTimer m_follower;
     };
 
 } // namespace app::disp

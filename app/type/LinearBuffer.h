@@ -2,8 +2,8 @@
 // Created by pc on 05-11-21.
 //
 
-#ifndef H_APP_AUDIO_LINEARBUFFER_H
-#define H_APP_AUDIO_LINEARBUFFER_H
+#ifndef H_APP_TYPE_LINEARBUFFER_H
+#define H_APP_TYPE_LINEARBUFFER_H
 
 #include "BufferBase.h"
 
@@ -11,7 +11,7 @@
 #include <cassert>
 #include <functional>
 
-namespace app::audio {
+namespace app::type {
 
     template <typename T, size_t Size>
     class LinearBuffer : public BufferBase<T, Size> {
@@ -38,7 +38,7 @@ namespace app::audio {
             return this->m_data;
         }
 
-        [[nodiscard]] LinearBuffer<T, Size> operator+(const LinearBuffer<T, Size>& other) {
+        [[nodiscard]] LinearBuffer<T, Size> operator+(const LinearBuffer<T, Size>& other) const {
             LinearBuffer<T, Size> result(*this);
             auto                  it       = result.m_data.begin();
             auto                  other_it = other.m_data.begin();
@@ -49,7 +49,7 @@ namespace app::audio {
             return result;
         }
 
-        [[nodiscard]] LinearBuffer<T, Size> operator/(float divider) {
+        [[nodiscard]] LinearBuffer<T, Size> operator/(float divider) const {
             LinearBuffer<T, Size> result(*this);
             for (auto& el : result.m_data)
                 el /= divider;
@@ -68,6 +68,6 @@ namespace app::audio {
         }
     };
 
-} // namespace app::audio
+} // namespace app::type
 
-#endif // H_APP_AUDIO_LINEARBUFFER_H
+#endif // H_APP_TYPE_LINEARBUFFER_H

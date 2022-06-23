@@ -8,6 +8,8 @@
 #include "IntFrac.h"
 #include "Vector2F.h"
 
+#include <cstddef>
+
 namespace app::math {
 
     template <typename T>
@@ -23,6 +25,9 @@ namespace app::math {
     void     rotateAboutZero(Vector2F& point, float theta);
     Vector2F random_point_zero_one();
     Vector2F random_point_centered();
+    bool     bernoulli_trial(float p);
+    float    uniform_zero_one();
+    int      random_number_in_range(int min, int max);
 
 } // namespace app::math
 

@@ -5,6 +5,7 @@
 #include "Math.h"
 
 #include <cmath>
+#include <random>
 
 namespace app::math {
 
@@ -15,14 +16,29 @@ namespace app::math {
     }
 
     Vector2F random_point_zero_one() {
-        auto x = rand() / static_cast<float>(RAND_MAX);
-        auto y = rand() / static_cast<float>(RAND_MAX);
-
-        return {x, y};
+        return {uniform_zero_one(), uniform_zero_one()};
     }
 
     Vector2F random_point_centered() {
         return 2 * random_point_zero_one() - Point{1, 1};
+    }
+
+    bool bernoulli_trial(float p) {
+        return uniform_zero_one() < p;
+    }
+
+    float uniform_zero_one() {
+        static std::default_random_engine            generator(2);
+        static std::uniform_real_distribution<float> distribution(0.0, 1.0);
+
+        return distribution(generator);
+    }
+
+    int random_number_in_range(int min, int max) {
+        static std::random_device          random_device;
+        static std::default_random_engine  engine(random_device());
+        std::uniform_int_distribution<int> distribution(min, max);
+        return distribution(engine);
     }
 
 } // namespace app::math

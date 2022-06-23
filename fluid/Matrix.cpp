@@ -87,4 +87,10 @@ namespace app::fluid {
         float sum = std::accumulate(m_array.begin(), m_array.end(), 0.f);
         return sum / static_cast<float>(m_array.size());
     }
+
+    Matrix& Matrix::operator*=(float multiplier) {
+        for (auto& el : m_array)
+            el *= multiplier;
+        return *this;
+    }
 } // namespace app::fluid

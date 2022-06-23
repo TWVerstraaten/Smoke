@@ -42,7 +42,7 @@ namespace app::disp {
 
         template <class S>
         bool manipulating_same(const ManipulatorBase<S>& other) const {
-           return static_cast<void*>(m_value) == static_cast<void*>(other.value());
+            return static_cast<void*>(m_value) == static_cast<void*>(other.value());
         }
 
         T* value() const {

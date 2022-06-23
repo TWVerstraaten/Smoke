@@ -13,7 +13,7 @@ namespace app::fluid {
     class Fluid {
 
       public:
-        void                add_density(float x, float y, float multiplier = 1.0f);
+        void                add_density(double x, double y, double multiplier = 1.0f);
         void                add_velocity(float x, float y, float dx, float dy);
         void                clear_previous();
         void                clear_current();

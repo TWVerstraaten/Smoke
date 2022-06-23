@@ -4,7 +4,9 @@
 
 #include "AudioPlayer.h"
 
-#include "LinearBuffer.h"
+#include "../type/LinearBuffer.h"
+
+#include <iostream>
 
 namespace app::audio {
 
@@ -23,17 +25,14 @@ namespace app::audio {
         m_sound.setBuffer(m_sound_buffer);
         m_samples_rate = m_sound_buffer.getSampleRate() * m_sound_buffer.getChannelCount();
         m_sound.setLoop(true);
-        m_clock.restart();
     }
 
     size_t AudioPlayer::current_offset() const {
         size_t offset = static_cast<size_t>(m_sound.getPlayingOffset().asSeconds() * static_cast<float>(m_samples_rate));
-        if (offset != m_last_sfml_offset) {
+        if (offset != m_last_sfml_offset)
             m_last_sfml_offset = offset;
-            m_clock.restart();
-            return m_last_sfml_offset;
-        }
-        return static_cast<size_t>((m_sound.getPlayingOffset().asSeconds() + m_clock.getElapsedTime().asSeconds()) * static_cast<float>(m_samples_rate));
+
+        return m_last_sfml_offset;
     }
 
     void AudioPlayer::play() {
@@ -57,15 +56,19 @@ namespace app::audio {
             play();
     }
 
-    AudioBuffer AudioPlayer::normalized_buffer() const {
-        const size_t offset             = current_offset();
+    type::AudioBuffer AudioPlayer::normalized_buffer() const {
+        size_t offset = current_offset();
+        if (offset > 5 * type::AudioBuffer::s_size)
+            offset -= 5 * type::AudioBuffer::s_size;
+
         const size_t total_sample_count = m_sound_buffer.getSampleCount();
         if (offset >= total_sample_count)
-            return AudioBuffer{};
+            return type::AudioBuffer{};
 
-        return AudioBuffer(static_cast<const sf::Int16*>(m_sound_buffer.getSamples() + offset),
-                           std::function<float(sf::Int16)>([](sf::Int16 s) { return static_cast<float>(s) / std::numeric_limits<sf::Int16>::max(); }),
-                           std::min(total_sample_count - offset, AudioBuffer::size));
+        assert(false);
+        return type::AudioBuffer(static_cast<const sf::Int16*>(m_sound_buffer.getSamples() + offset),
+                                 std::function<double(sf::Int16)>([](sf::Int16 s) { return static_cast<double>(s) / std::numeric_limits<sf::Int16>::max(); }),
+                                 std::min(total_sample_count - offset, type::AudioBuffer::s_size));
     }
 
     bool AudioPlayer::is_paused() const {

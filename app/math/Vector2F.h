@@ -9,16 +9,16 @@ namespace app::math {
 
     struct Vector2F {
         Vector2F() = default;
-        Vector2F(float m_x, float m_y);
+        Vector2F(double m_x, double m_y);
 
-        float x = 0.0f;
-        float y = 0.0f;
+        double x = 0.0f;
+        double y = 0.0f;
 
-        [[nodiscard]] float length() const;
+        [[nodiscard]] double length() const;
 
         Vector2F& operator+=(const Vector2F& other);
-        Vector2F& operator*(float multiplier);
-        Vector2F& operator*=(float multiplier);
+        Vector2F& operator*(double multiplier);
+        Vector2F& operator*=(double multiplier);
     };
 
     typedef Vector2F Point;
@@ -26,7 +26,7 @@ namespace app::math {
 
     Vector2F operator-(const Vector2F& a, const Vector2F& b);
     Vector2F operator+(const Vector2F& a, const Vector2F& b);
-    Vector2F operator*(float multiplier, const Vector2F& vector);
+    Vector2F operator*(double multiplier, const Vector2F& vector);
 
 } // namespace app::math
 

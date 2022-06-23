@@ -18,7 +18,7 @@ namespace app::disp {
         pal.setColor(QPalette::Window, QColor{static_cast<int>(m_intensity * 255.0f), static_cast<int>(m_intensity * 255.0f), static_cast<int>(m_intensity * 255.0f)});
         setAutoFillBackground(true);
         setPalette(pal);
-        m_intensity *= 0.96;
+        m_intensity *= 0.86;
         QWidget::paintEvent(event);
     }
 

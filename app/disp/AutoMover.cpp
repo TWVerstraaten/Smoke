@@ -19,8 +19,8 @@ namespace app::disp {
         if (m_velocity.length() >= 3.5f)
             m_velocity *= 3.5f / m_velocity.length();
 
-        m_position += 2.0 * elapsed * m_velocity;
-        if ((m_position - m_target_position).length() < 0.1)
+        m_position += 2.0f * elapsed * m_velocity;
+        if ((m_position - m_target_position).length() < 0.1f)
             reset();
 
         m_target_position += -0.01 * m_velocity;

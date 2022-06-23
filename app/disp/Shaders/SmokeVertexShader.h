@@ -21,6 +21,7 @@ namespace app::disp {
     uniform float zoom = 1.0;
     uniform float clamp_coefficient = 0.0f;
     uniform float power_scale = 0.5f;
+    uniform float color_wash = 0.0f;
     uniform float max_density;
     uniform float min_density;
     uniform float max_v;
@@ -72,16 +73,23 @@ namespace app::disp {
                 float hue        = atan(color.g, color.b) * 360.0 / 3.14;
                 float saturation = 0.8 * sqrt(color.g * color.g + color.b * color.b);
                 float value      = 0.002 * color.r + 0.4 * saturation;
-                if (color_mode == 1)                // COLOR_MODE::HSL
+                if (color_mode == 1) {                // COLOR_MODE::HSL
                     out_color = hslToRgb(hue, saturation, value);
-                else if (color_mode == 2)           // COLOR_MODE::HSV
-                    out_color = hsvToRgb(hue, saturation, value);
-                else if (color_mode == 3)           // COLOR_MODE::WATER
-                    out_color = 0.8 * vec3(0.24 * abs(value) - 0.12 * saturation, 0.28 * abs(value) + abs(0.1 * saturation), 0.2 * abs(value) + abs(0.3 * saturation)).rgb + 0.04 * hslToRgb(hue, saturation, value);
-                else if (color_mode == 4)           // COLOR_MODE::TEST_1
-                    out_color = vec3(0.002 * color.r + 0.2 * color.g, 0.3 * color.g - 0.1 * color.b, 0.7 * color.b - 0.0001 * color.r);
+                    out_color = out_color.rrb;
+                    out_color = out_color.bgr;
+                }
+                else if (color_mode == 2){           // COLOR_MODE::HSV
+                    out_color = 0.0025 * vec3(color.r, color.r, color.r);
+                }
+                else if (color_mode == 3) {
+          // COLOR_MODE::WATER
+                    out_color = 0.8 * vec3(0.24 * abs(value) - 0.12 * saturation, 0.28 * abs(value) + abs(0.1 * saturation), 0.2 * abs(value) + abs(0.3 * saturation));
+                }
+                else if (color_mode == 4) {          // COLOR_MODE::TEST_1
+                    out_color = 0.5 * vec3( value - 0.30 * color.g + 0.16 * color.b, value -  0.31 * color.g + 0.11 * color.b, value - 0.32 * color.g + 0.14 * color.b);
+                }
                 else if (color_mode == 5)           // COLOR_MODE::TEST_2
-                    out_color = vec3(1 - 0.002 * color.r + 0.2 * color.g, 1 - 0.3 * color.g - 0.1 * color.b, 1 - 0.7 * color.b - 0.0001 * color.r);
+                    out_color = vec3(0.3,0.3,0.3) - vec3(1 - 0.002 * color.r + 0.2 * color.g, 1 - 0.3 * color.g - 0.1 * color.b, 1 - 0.7 * color.b - 0.0001 * color.r);
             }
 
             out_color = vec3(pow(out_color.r, power_scale), pow(out_color.g, power_scale), pow(out_color.b, power_scale));
@@ -91,8 +99,9 @@ namespace app::disp {
                 out_color = vec3(1.0f - out_color.r, 1.0f - out_color.g, 1.0f - out_color.b);
 
             out_color = (1.0f - clamp_coefficient) * out_color + clamp_coefficient * vec3(clamp_to_levels(out_color.r), clamp_to_levels(out_color.g), clamp_to_levels(out_color.b));
-//            if (on(gl_Position.xy))
-//                out_color = vec3(1.0 - out_color.r, 1.0 - out_color.g, 1.0 - out_color.b);
+            out_color = (1 - color_wash) * out_color + color_wash * vec3(1, 1, 1);
+
+            out_color *= 0.94;
         }
     }
 )glsl";

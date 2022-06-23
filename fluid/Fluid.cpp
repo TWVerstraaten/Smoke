@@ -42,7 +42,7 @@ namespace app::fluid {
         return m_v.sample_at(x, y);
     }
 
-    void Fluid::add_density(float x, float y, float multiplier) {
+    void Fluid::add_density(double x, double y, double multiplier) {
         if (x <= 0 || x >= 1 || y <= 0 || y >= 1) {
             return;
         }

@@ -7,6 +7,6 @@
 namespace app::thr {
 
     bool   g_multi_thread = true;
-    size_t g_thread_count = 8;
+    size_t g_thread_count = 14;
 
 } // namespace app::thr

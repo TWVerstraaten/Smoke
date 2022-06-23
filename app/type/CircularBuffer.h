@@ -2,8 +2,8 @@
 // Created by pc on 05-11-21.
 //
 
-#ifndef H_APP_AUDIO_CIRCULARBUFFER_H
-#define H_APP_AUDIO_CIRCULARBUFFER_H
+#ifndef H_APP_TYPE_CIRCULARBUFFER_H
+#define H_APP_TYPE_CIRCULARBUFFER_H
 
 #include "BufferBase.h"
 
@@ -12,7 +12,7 @@
 #include <numeric>
 #include <vector>
 
-namespace app::audio {
+namespace app::type {
 
     template <typename T, size_t Size>
     class CircularBuffer : public BufferBase<T, Size> {
@@ -47,4 +47,4 @@ namespace app::audio {
 
 } // namespace app::audio
 
-#endif // H_APP_AUDIO_CIRCULARBUFFER_H
+#endif // H_APP_TYPE_CIRCULARBUFFER_H

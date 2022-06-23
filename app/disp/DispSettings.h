@@ -9,7 +9,7 @@
 
 namespace app::disp {
 
-    enum class COLOR_MODE : int { GRAY = 0, HSL = 1, HSV = 2, WATER = 3, TEST_1 = 4, TEST_2 = 5 };
+    enum class COLOR_MODE : int { GRAY = 0, HSL = 1, HSV = 2, WATER = 3, TEST_1 = 4, TEST_2 = 5, NUM_MODES = 6 };
 
     extern COLOR_MODE g_color_mode;
     extern bool       g_invert_colors;
@@ -19,6 +19,7 @@ namespace app::disp {
     extern float      g_power_scale;
     extern size_t     g_pixel_size;
     extern size_t     g_clamp_count;
+    extern float      g_color_wash;
 
 } // namespace app::disp
 

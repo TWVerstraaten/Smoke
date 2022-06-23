@@ -15,13 +15,14 @@ namespace app::fluid {
 
         void                        add_density(const app::math::Point& point, float multiplier = 1.0f);
         void                        add_velocity(const app::math::Point& point, const app::math::Direction& direction);
-        void                        add_density(float x, float y, float multiplier = 1.0f);
-        void                        add_velocity(float x, float y, float dx, float dy);
+        void                        add_density(double x, double y, double multiplier = 1.0f);
+        void                        add_velocity(double x, double y, double dx, double dy);
         void                        clear_previous();
         void                        clear_current();
         void                        step();
         void                        set_circle();
-        void                        set_polygon(size_t n, float intensity);
+        void                        set_polygon(size_t n, double intensity, math::Point direction_offset);
+        void                        scale_density(float multiplier);
         [[nodiscard]] float         sample_density_at(float x, float y) const;
         [[nodiscard]] float         sample_u_at(float x, float y) const;
         [[nodiscard]] float         sample_v_at(float x, float y) const;

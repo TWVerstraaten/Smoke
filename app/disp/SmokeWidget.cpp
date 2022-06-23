@@ -6,37 +6,19 @@
 
 #include "../../fluid/Fluid.h"
 #include "../State.h"
-#include "../misc/Overloaded.h"
+#include "../math/Math.h"
 #include "../prf/Profile.h"
 #include "DispSettings.h"
+#include "MainWindow.h"
+#include "SmokeEffect.h"
 
 #include <QMouseEvent>
 
 namespace app::disp {
 
-    SmokeWidget::SmokeWidget(QWidget* parent) : QOpenGLWidget(parent), m_fluid(new fluid::Fluid) {
-        m_auto_movers.resize(1);
-
-        m_shots.emplace_back(Shot{[this](float beat_score) {
-                                      zoom(beat_score / 30);
-                                      set_random_shape();
-                                  },
-                                  0.2});
-
-        m_shots.emplace_back(Shot{[this](float beat_score) { try_adding_manipulator(ManipulatorBase<float>(10, 0.0f, 0.9f, &g_clamp_coefficient)); }, 0.8});
-        m_shots.emplace_back(Shot{[this](float beat_score) { g_invert_colors = !g_invert_colors; }, 0.1});
-        m_shots.emplace_back(Shot{[this](float beat_score) {
-                                      m_auto_movers.resize(0);
-                                      m_auto_movers.resize(rand() % 2);
-                                  },
-                                  0.4});
-
-        m_shots.emplace_back(Shot{[this](float beat_score) { try_adding_manipulator(ManipulatorBase<size_t>(0.4f * beat_score, 6, 2, &g_clamp_count)); }, 0.6});
-        m_shots.emplace_back(
-            Shot{[this](float beat_score) { try_adding_manipulator(ManipulatorBase<float>(0.4f * beat_score, 0.4f - (beat_score / 10), 0.7, &g_power_scale)); }, 0.6});
-        m_shots.emplace_back(
-            Shot{[this](float beat_score) { try_adding_manipulator(ManipulatorBase<float>(0.4f * beat_score, 0.9f, g_clamp_coefficient, &g_clamp_coefficient)); }, 0.6});
-        m_shots.emplace_back(Shot{[this](float beat_score) { try_adding_manipulator(ManipulatorBase<size_t>(0.2f * beat_score, 12, 6, &g_pixel_size)); }, 0.04});
+    SmokeWidget::SmokeWidget(MainWindow* parent) : QOpenGLWidget(parent), m_fluid(new fluid::Fluid) {
+        //        m_auto_movers.resize(2);
+        m_elapsed_timer.start();
     }
 
     SmokeWidget::~SmokeWidget() = default;
@@ -45,43 +27,49 @@ namespace app::disp {
         initializeOpenGLFunctions();
         QOpenGLFunctions::glEnable(GL_POINT_SIZE);
         glClearColor(0, 0, 0, 1);
-        if ((not m_smoke_renderer.init()) || (not m_line_renderer.init()))
+        if ((not m_smoke_renderer.init()))
             close();
     }
 
     void SmokeWidget::paintGL() {
-        PROFILE_FUNCTION();
+        //        PROFILE_FUNCTION();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         draw_smoke();
         draw_lines();
         //        PRINT_PROFILE();
-        START_PROFILING();
+        //        START_PROFILING();
     }
 
     void SmokeWidget::step(float elapsed) {
-        PROFILE_FUNCTION();
+        //        PROFILE_FUNCTION();
         if (not State::get().is_paused()) {
             ShaderBase::update_statics(elapsed);
 
-            for (auto& auto_mover : m_auto_movers) {
-                auto_mover.update(elapsed);
-                m_fluid->add_density(auto_mover.position(), 0.5);
-                m_fluid->add_velocity(auto_mover.position(), 0.04 * auto_mover.velocity());
-                //                m_fluid->add_density(auto_mover.target_position());
-            }
-
-            m_manipulators.erase(std::remove_if(m_manipulators.begin(),
-                                                m_manipulators.end(),
-                                                [](const auto& v) { return std::visit(misc::Overloaded{[](const auto& obj) { return obj.is_done(); }}, v); }),
-                                 m_manipulators.end());
-
-            for (auto& manipulator : m_manipulators) {
-                std::visit(misc::Overloaded{[elapsed](auto& a) { a.update(elapsed); }}, manipulator);
-            }
+            update_auto_movers(elapsed);
+            remove_finished_manipulators();
+            update_manipulators(elapsed);
 
             m_fluid->step();
         }
         update();
+    }
+
+    void SmokeWidget::remove_finished_manipulators() {
+        static const auto is_done_lambda = [](const auto& v) { return std::visit([](const auto& obj) { return obj.is_done(); }, v); };
+        m_manipulators.erase(std::remove_if(m_manipulators.begin(), m_manipulators.end(), is_done_lambda), m_manipulators.end());
+    }
+
+    void SmokeWidget::update_manipulators(float elapsed) {
+        for (auto& manipulator : m_manipulators)
+            std::visit([elapsed](auto& a) { a.update(elapsed); }, manipulator);
+    }
+
+    void SmokeWidget::update_auto_movers(float elapsed) {
+        for (auto& auto_mover : m_auto_movers) {
+            auto_mover.update(elapsed);
+            m_fluid->add_density(auto_mover.position(), 0.5);
+            m_fluid->add_velocity(auto_mover.position(), 0.09 * auto_mover.velocity());
+        }
     }
 
     void SmokeWidget::mouseMoveEvent(QMouseEvent* e) {
@@ -119,12 +107,11 @@ namespace app::disp {
         m_fluid->clear_previous();
     }
 
-    void SmokeWidget::set_random_shape() {
-        //        m_fluid->set_circle();
-        m_fluid->set_polygon(3 + (rand() % 12), rand() / static_cast<float>(RAND_MAX));
+    void SmokeWidget::set_random_shape(double intensity) {
+        m_fluid->set_polygon(3 + math::random_number_in_range(0, 8), app::math::clamp(intensity, 0.0, 1.0), app::math::Point(0.5, 0.5));
     }
 
-    void SmokeWidget::zoom(float zoom_depth) {
+    void SmokeWidget::zoom(double zoom_depth) {
         ShaderBase::zoom(zoom_depth);
     }
 
@@ -138,35 +125,41 @@ namespace app::disp {
     }
 
     void SmokeWidget::draw_lines() {
+        //        m_line_renderer.fill_around_circle(m_sound_window->smoothed_dft_buffers().last_set());
+        //        m_line_renderer.fill_around_circle(m_sound_window->smoothed_dft_buffers().last_set());
+        //        m_line_renderer.bind();
+        //        glDrawElements(GL_LINE_STRIP, static_cast<GLsizei>(m_line_renderer.index_count()), GL_UNSIGNED_INT, nullptr);
+        //        m_line_renderer.unbind();
     }
 
     void SmokeWidget::handle_beat(float beat_score) {
-        try_adding_manipulator(ManipulatorBase<size_t>(0.4f, 6, 2, &g_clamp_count));
-        if (beat_score < 0.01)
+        if (beat_score < 0.6)
             return;
 
         beat_score = std::min(beat_score, 2.0f);
+        for (auto& effect_detail : SmokeEffectManager::s_effects)
+            if ((not effect_detail.is_on_cool_down) && math::bernoulli_trial(beat_score * effect_detail.probability)) {
+                effect_detail.smoke_effect(*this, beat_score);
+                effect_detail.start_cool_down();
+            }
 
-        for (const auto& shot : m_shots) {
-            if (rand() < static_cast<float>(RAND_MAX) * shot.m_probability)
-                shot.m_func(beat_score);
-        }
-
-        for (auto& mover : m_auto_movers) {
-            float p = beat_score / 10;
-            if (rand() < p * static_cast<float>(RAND_MAX))
-                mover.reset();
-        }
+        for (auto& mover : m_auto_movers)
+            mover.reset();
     }
 
     void SmokeWidget::try_adding_manipulator(Manipulator&& manipulator) {
-        static auto same_lambda = [](const auto& man, const auto& inner) { return std::visit(misc::Overloaded{[&](const auto& in) { return man.manipulating_same(in); }}, inner); };
-        static auto same_exists_in_vector = [&](const auto& man) {
-            return std::find_if(m_manipulators.begin(), m_manipulators.end(), [&](const auto& inner) { return same_lambda(man, inner); }) != m_manipulators.end();
+        const auto same_lambda = [&](const auto& inner) {
+            return std::visit([&](const auto& one) { return std::visit([&](const auto& two) { return one.manipulating_same(two); }, manipulator); }, inner);
         };
 
-        if (not std::visit(same_exists_in_vector, manipulator))
+        // We check that the value we are trying to manipulate isn't already being manipulated
+        if (std::find_if(m_manipulators.begin(), m_manipulators.end(), same_lambda) == m_manipulators.end())
             m_manipulators.emplace_back(manipulator);
+    }
+
+    void SmokeWidget::resizeGL(int w, int h) {
+        m_smoke_renderer.resize(w, h);
+        QOpenGLWidget::resizeGL(w, h);
     }
 
 } // namespace app::disp

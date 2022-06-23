@@ -23,12 +23,15 @@ namespace app::disp {
         m_program.setUniformValue("clamp_coefficient", g_clamp_coefficient);
         m_program.setUniformValue("clamp_count", static_cast<int>(g_clamp_count));
         m_program.setUniformValue("power_scale", g_power_scale);
+        m_program.setUniformValue("color_wash", g_color_wash);
         m_program.setUniformValue("max_density", m_max_density);
         m_program.setUniformValue("min_density", m_min_density);
         m_program.setUniformValue("max_u", m_max_u);
         m_program.setUniformValue("min_u", m_min_u);
         m_program.setUniformValue("max_v", m_max_v);
         m_program.setUniformValue("min_v", m_min_v);
+        m_program.setUniformValue("width", static_cast<int>(m_width));
+        m_program.setUniformValue("height", static_cast<int>(m_height));
     }
 
     void SmokeShader::set_extreme_values(const fluid::Fluid& fluid) {
@@ -41,6 +44,11 @@ namespace app::disp {
         m_min_u             = u.min();
         m_max_v             = v.max();
         m_min_v             = v.min();
+    }
+
+    void SmokeShader::resize(size_t width, size_t height) {
+        m_width  = width;
+        m_height = height;
     }
 
 } // namespace app::disp

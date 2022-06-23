@@ -5,26 +5,27 @@
 #ifndef H_APP_AUDIO_BEATHANDLER_H
 #define H_APP_AUDIO_BEATHANDLER_H
 
-#include <QObject>
 #include <cstddef>
 
 namespace app::audio {
 
-    class BeatHandler : public  QObject{
-
-        Q_OBJECT
+    class BeatHandler {
 
       public:
-        void                set_beat_score(float beat_score);
-        [[nodiscard]] float intensity() const;
-        [[nodiscard]] bool  was_just_blocked() const;
+        void                 set_beat_score(double beat_score);
+        [[nodiscard]] double intensity() const;
+        [[nodiscard]] bool   was_just_blocked() const;
+        [[nodiscard]] double current_beat_impuls() const;
 
       private:
         bool   m_is_blocked         = false;
         bool   m_was_just_blocked   = false;
-        float  m_intensity          = 0.0f;
-        float  m_beat_cut_off       = 0.34f;
-        size_t m_beat_cooldown_msec = 150;
+        double m_intensity          = 0.0f;
+        double m_beat_cut_off       = 0.3f;
+        size_t m_beat_cooldown_msec = 220;
+        bool   m_beat_is_coming     = false;
+        double m_running_average    = 0.0f;
+        size_t m_force_beat_wait    = 10;
     };
 
 } // namespace app::audio

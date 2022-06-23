@@ -15,10 +15,12 @@ namespace app::disp {
     }
 
     bool RendererBase::init() {
-        return (m_quad_array_buffer.create() && m_quad_index_buffer.create() && m_shader->init());
+        m_is_initialized = m_quad_array_buffer.create() && m_quad_index_buffer.create() && m_shader->init();
+        return m_is_initialized;
     }
 
     void RendererBase::bind() {
+        assert(m_is_initialized);
         m_quad_array_buffer.bind();
         m_quad_array_buffer.allocate(m_quad_vertices.data(), static_cast<int>(m_quad_vertices.size() * sizeof(float)));
         m_quad_index_buffer.bind();

@@ -2,8 +2,10 @@
 // Created by pc on 07-11-21.
 //
 
-#ifndef H_AUDIO_BUFFERBASE_H
-#define H_AUDIO_BUFFERBASE_H
+#ifndef H_APP_TYPE_BUFFERBASE_H
+#define H_APP_TYPE_BUFFERBASE_H
+
+#include "../math/Math.h"
 
 #include <array>
 #include <cassert>
@@ -11,13 +13,13 @@
 #include <cstddef>
 #include <numeric>
 
-namespace app::audio {
+namespace app::type {
 
     template <typename T, size_t Size>
     class BufferBase {
 
       public:
-        static constexpr size_t size = Size;
+        static constexpr size_t s_size = Size;
 
         virtual const T& operator[](size_t index) const = 0;
 
@@ -35,23 +37,22 @@ namespace app::audio {
             return sum() / Size;
         }
 
-        [[nodiscard]] T energy() const {
+        [[nodiscard]] T energy(size_t start = 0, size_t end = s_size) const {
             T result{};
-            for (size_t i = 0; i != size; ++i)
-                result += std::abs(m_data[i] * m_data[i]);
+            for (size_t i = start; i != end; ++i)
+                    result += math::square(std::abs(m_data[i]));
 
-            return result;
+            return std::sqrt(result);
         }
 
-        [[nodiscard]] const std::array<T, size>& data() const {
+        [[nodiscard]] const std::array<T, s_size>& data() const {
             return m_data;
         }
-
 
       protected:
         std::array<T, Size> m_data;
     };
 
-} // namespace audio
+} // namespace app::type
 
-#endif // H_AUDIO_BUFFERBASE_H
+#endif // H_APP_TYPE_BUFFERBASE_H

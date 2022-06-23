@@ -31,6 +31,7 @@ namespace app::fluid {
         void                set_zero();
         void                add_scaled(const Matrix& rhs, float weight);
         Matrix&             operator+=(const Matrix& rhs);
+        Matrix&             operator*=(float multiplier);
         [[nodiscard]] float sample_at(float x, float y) const;
         [[nodiscard]] float max() const;
         [[nodiscard]] float min() const;

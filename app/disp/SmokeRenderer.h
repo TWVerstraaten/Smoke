@@ -20,6 +20,7 @@ namespace app::disp {
 
         void fill(const app::fluid::Fluid& fluid);
         void set_sample_points(size_t width, size_t height);
+        void resize(size_t width, size_t height);
 
       private:
         void fill_quads_pixel(const app::fluid::Fluid& fluid);

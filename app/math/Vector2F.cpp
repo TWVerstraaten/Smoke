@@ -8,14 +8,14 @@
 
 namespace app::math {
 
-    Vector2F::Vector2F(float m_x, float m_y) : x(m_x), y(m_y) {
+    Vector2F::Vector2F(double m_x, double m_y) : x(m_x), y(m_y) {
     }
 
-    float Vector2F::length() const {
+    double Vector2F::length() const {
         return std::sqrt(x * x + y * y);
     }
 
-    Vector2F& Vector2F::operator*(float multiplier) {
+    Vector2F& Vector2F::operator*(double multiplier) {
         x *= multiplier;
         y *= multiplier;
         return *this;
@@ -27,7 +27,7 @@ namespace app::math {
         return *this;
     }
 
-    Vector2F& Vector2F::operator*=(float multiplier) {
+    Vector2F& Vector2F::operator*=(double multiplier) {
         x *= multiplier;
         y *= multiplier;
         return *this;
@@ -41,7 +41,7 @@ namespace app::math {
         return {a.x + b.x, a.y + b.y};
     }
 
-    Vector2F operator*(float multiplier, const Vector2F& vector) {
+    Vector2F operator*(double multiplier, const Vector2F& vector) {
         return {multiplier * vector.x, multiplier * vector.y};
     }
 } // namespace app::math

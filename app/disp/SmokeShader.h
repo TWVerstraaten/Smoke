@@ -20,14 +20,17 @@ namespace app::disp {
 
         bool init() override;
         void set_uniforms() override;
+        void resize(size_t width, size_t height);
 
       private:
-        float m_max_density;
-        float m_min_density;
-        float m_max_v;
-        float m_min_v;
-        float m_max_u;
-        float m_min_u;
+        float  m_max_density;
+        float  m_min_density;
+        float  m_max_v;
+        float  m_min_v;
+        float  m_max_u;
+        float  m_min_u;
+        size_t m_width;
+        size_t m_height;
     };
 
 } // namespace app::disp
